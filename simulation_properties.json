@@ -1,0 +1,20 @@
+{
+"minCPUCount":1,
+"maxCPUCount":"4",
+"minMemorySize":"1024",
+"maxMemorySize":"4098",
+"minDiskSize":"1",
+"maxDiskSize":"10240",
+"minExecutionTime":"10000",
+"maxExecutionTime":"60000",
+"numberOfJobs":"20",
+"jobSchedulingDelay":"1000",
+"physicalMachines":
+	[
+		{},
+		{},
+		{},
+		{},
+		{}
+	]
+}
