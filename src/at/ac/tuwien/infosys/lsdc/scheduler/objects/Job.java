@@ -1,13 +1,18 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
+import java.util.ArrayList;
+
+import at.ac.tuwien.infosys.lsdc.scheduler.IJobCompletionCallBack;
+
 public class Job implements Runnable{
 	private Integer size = null;
 	private Integer consumedMemory = null;
 	private Integer consumedCPUs = null;
 	private Integer executionTime = null;
 //	private Integer priority = null;
+	private ArrayList<IJobCompletionCallBack> callbacks = new ArrayList<IJobCompletionCallBack>();
 	
-	//TODO: add callback interface field, implement priority
+	//TODO:  implement priority
 	
 	public Job(Integer size, Integer consumedMemory, Integer consumedCPUs,
 			Integer executionTime) {
@@ -24,11 +29,17 @@ public class Job implements Runnable{
 			Thread.sleep((long)executionTime);
 		}
 		catch (InterruptedException e) {
-			//TODO if thread sleep is interrupted, we need to throw some kind of error and abort simulation
+			//TODO if thread sleep is interrupted, we might need to throw some kind of error and abort simulation
 			e.printStackTrace();
 		}
-		//TODO add callback call when job is complete
 		
+		for(IJobCompletionCallBack currentCallback : callbacks){
+			currentCallback.completeJob(this);
+		}		
+	}
+	
+	public void addCallback(IJobCompletionCallBack callback){
+		callbacks.add(callback);
 	}
 
 	public Integer getSize() {

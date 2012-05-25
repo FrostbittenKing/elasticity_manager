@@ -11,10 +11,10 @@
 "jobSchedulingDelay":"1000",
 "physicalMachines":
 	[
-		{},
-		{},
-		{},
-		{},
-		{}
+		{"CPUs":8, "memory":10000, "diskMemory":100000, "pricePerCycle":10},
+		{"CPUs":3, "memory":20000, "diskMemory":200000, "pricePerCycle":10},
+		{"CPUs":7, "memory":30000, "diskMemory":300000, "pricePerCycle":10},
+		{"CPUs":15, "memory":40000, "diskMemory":400000, "pricePerCycle":10},
+		{"CPUs":2, "memory":50000, "diskMemory":500000, "pricePerCycle":10}
 	]
 }

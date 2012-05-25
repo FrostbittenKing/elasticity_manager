@@ -1,12 +1,7 @@
 package at.ac.tuwien.infosys.lsdc.simulation;
 
-import java.io.FileNotFoundException;
-
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
-
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
 
 public class Simulation {
 	private static final String SIMULATION_PROPERTIES_FILENAME = "simulation_properties.json";
@@ -15,15 +10,7 @@ public class Simulation {
 		try {
 			parameters = SimulationParametersFactory.getInstance().createParameters(SIMULATION_PROPERTIES_FILENAME);
 		}
-		catch (JsonSyntaxException e) {
-			e.printStackTrace();
-			return;
-		}
-		catch (JsonIOException e) {
-			e.printStackTrace();
-			return;
-		}
-		catch (FileNotFoundException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
@@ -34,7 +21,6 @@ public class Simulation {
 			JobScheduler.getInstance().scheduleJob(createJob(parameters));
 			Thread.sleep((long)parameters.getJobSchedulingDelay());
 		}
-
 	}
 
 	private static Job createJob(SimulationParameters parameters){
@@ -51,7 +37,7 @@ public class Simulation {
 	}
 
 	private static Integer generateNormalDistributedInteger(Integer lowerBound, Integer upperBound){
-		//TODO: someone else can dick around with this shit, use java.util.Random.nextGaussian()
+		//TODO: someone else can dick around with this shit, use java.util.Random.nextGaussian() or whatever
 		return 5000;
 	}
 }
