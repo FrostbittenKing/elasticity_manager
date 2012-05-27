@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobCompletionCallBack;
 
 public class Job implements Runnable{
-	private Integer size = null;
+	private Integer consumedDiskMemory = null;
 	private Integer consumedMemory = null;
 	private Integer consumedCPUs = null;
 	private Integer executionTime = null;
@@ -17,7 +17,7 @@ public class Job implements Runnable{
 	public Job(Integer size, Integer consumedMemory, Integer consumedCPUs,
 			Integer executionTime) {
 		super();
-		this.size = size;
+		this.consumedDiskMemory = size;
 		this.consumedMemory = consumedMemory;
 		this.consumedCPUs = consumedCPUs;
 		this.executionTime = executionTime;
@@ -42,8 +42,8 @@ public class Job implements Runnable{
 		callbacks.add(callback);
 	}
 
-	public Integer getSize() {
-		return size;
+	public Integer getConsumedDiskMemory() {
+		return consumedDiskMemory;
 	}
 
 	public Integer getConsumedMemory() {
@@ -62,8 +62,8 @@ public class Job implements Runnable{
 //		return priority;
 //	}
 
-	public void setSize(Integer size) {
-		this.size = size;
+	public void setConsumedDiskMemory(Integer size) {
+		this.consumedDiskMemory = size;
 	}
 
 	public void setConsumedMemory(Integer consumedMemory) {
@@ -80,7 +80,7 @@ public class Job implements Runnable{
 
 	@Override
 	public String toString() {
-		return "Job [size=" + size + ", consumedMemory=" + consumedMemory
+		return "Job [size=" + consumedDiskMemory + ", consumedMemory=" + consumedMemory
 				+ ", consumedCPUs=" + consumedCPUs + ", executionTime="
 				+ executionTime + "]";
 	}

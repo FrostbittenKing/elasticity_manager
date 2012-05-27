@@ -37,7 +37,7 @@ public class Simulation {
 	}
 
 	private static Integer generateNormalDistributedInteger(Integer lowerBound, Integer upperBound){
-		//TODO: someone else can dick around with this shit, use java.util.Random.nextGaussian() or whatever
+		//TODO: find a way to generate a normal distributed integer between lowerBound and upperBound
 		return 5000;
 	}
 }

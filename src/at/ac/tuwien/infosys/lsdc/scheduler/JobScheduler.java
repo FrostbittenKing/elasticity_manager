@@ -12,38 +12,56 @@ public class JobScheduler implements IJobCompletionCallBack{
 	private ArrayList<PhysicalMachine> physicalMachines = new ArrayList<PhysicalMachine>();
 	private ArrayList<VirtualMachine> virtualMachines = new ArrayList<VirtualMachine>();
 	
-	private Integer currentUsedTotalMemory = 0;
-	private Integer currentUsedTotalCPUs = 0;
-	private Integer currentUsedTotalDiskMemory = 0;
+	private Integer currentUsedMemory = 0;
+	private Integer currentUsedCPUs = 0;
+	private Integer currentUsedDiskMemory = 0;
 	
-	private Integer totalAvailableMemory = 0;
-	private Integer totalAvailableCPUs = 0;
-	private Integer totalAvailableDiskMemory = 0;
+	private Integer totalMemory = null;
+	private Integer totalCPUs = null;
+	private Integer totalDiskMemory = null;
+	
+	private Integer currentCycleCosts = null;
 	
 	private JobScheduler(){
 		
 	}
 	
 	public void initialize(ArrayList<PhysicalMachine> physicalMachines){
+		totalMemory = 0;
+		totalCPUs = 0;
+		totalDiskMemory = 0;
+		currentCycleCosts = 0;
+		
+		this.physicalMachines.clear();
+		
 		for (PhysicalMachine currentMachine : physicalMachines){
 			this.physicalMachines.add(currentMachine);
-			totalAvailableCPUs += currentMachine.getCPUs();
-			totalAvailableDiskMemory += currentMachine.getDiskMemory();
-			totalAvailableMemory += currentMachine.getMemory();
+			totalCPUs += currentMachine.getCPUs();
+			totalDiskMemory += currentMachine.getDiskMemory();
+			totalMemory += currentMachine.getMemory();
 			System.out.println("Added phyiscal machine: " + currentMachine);
 		}
 	}
 	
 	public synchronized void scheduleJob(Job job){
 		System.out.println("Scheduled job: " + job + " , WOOHOO!");
-		//TODO: magic happens here
 		
+		if (totalCPUs - currentUsedCPUs >= job.getConsumedCPUs() &&
+			totalDiskMemory - currentUsedDiskMemory >= job.getConsumedDiskMemory() &&
+			totalMemory - currentUsedMemory >= job.getConsumedMemory()){
+			//job might be fit in somewhere, main scheduling algorithm takes place here
+		}
+		else{
+			//TODO: job doesn't fit, outsource to other cloud
+		}
 		/* TODO:
 		 * check if there is enough memory, diskmemory, cpus to fit new job
 		 * if yes, do fancy scheduling shit with bin packing
+		 * if physical machine needs to be started, add its cost per cycle to currentCycleCosts
+		 * if a physical machine is shut down, remove the costs
 		 * if not, outsource job to other cloud
-		 * finally, if job was able to be scheduled locally, add job diskmemory, memory, cpu requirements to currentusage, then call (new Thread(job)).run() 
-		 * 
+		 * finally, if job was able to be scheduled locally, add job diskmemory,
+		 * memory, cpu requirements to currentusage, then call VirtualMachine.addJob(job) 
 		 */
 	}
 	
@@ -56,10 +74,9 @@ public class JobScheduler implements IJobCompletionCallBack{
 
 	@Override
 	public synchronized void completeJob(Job job) {
-		//TODO: remove job from virtual machine? or maybe let virtual machine do it itself
-		currentUsedTotalCPUs -= job.getConsumedCPUs();
-		currentUsedTotalDiskMemory -= job.getSize();
-		currentUsedTotalMemory -= job.getConsumedMemory();
+		currentUsedCPUs -= job.getConsumedCPUs();
+		currentUsedDiskMemory -= job.getConsumedDiskMemory();
+		currentUsedMemory -= job.getConsumedMemory();
 	}
 
 }

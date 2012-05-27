@@ -1,5 +1,64 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
-public class VirtualMachine {
+import java.util.Vector;
 
+import at.ac.tuwien.infosys.lsdc.scheduler.IJobCompletionCallBack;
+
+public class VirtualMachine implements IJobCompletionCallBack{
+	private Integer totalAvailableMemory = null;
+	private Integer totalAvailableCPUs = null;
+	private Integer totalAvailableDiskMemory = null;
+	
+	private Integer currentUsedTotalMemory = 0;
+	private Integer currentUsedTotalCPUs = 0;
+	private Integer currentUsedTotalDiskMemory = 0;
+	
+	private Vector<Job> runningJobs = new Vector<Job>();
+
+	public VirtualMachine(Integer diskSize, Integer memorySize, Integer numCPUs){
+		this.totalAvailableCPUs = numCPUs;
+		this.totalAvailableDiskMemory = diskSize;
+		this.totalAvailableMemory = memorySize;
+	}
+	
+	public synchronized void addJob(Job job){
+		runningJobs.add(job);
+		currentUsedTotalCPUs += job.getConsumedCPUs();
+		currentUsedTotalDiskMemory += job.getConsumedDiskMemory();
+		currentUsedTotalMemory += job.getConsumedMemory();
+		(new Thread(job)).run();
+	}
+	
+	@Override
+	public synchronized void completeJob(Job job) {
+		runningJobs.remove(job);
+		currentUsedTotalCPUs -= job.getConsumedCPUs();
+		currentUsedTotalDiskMemory -= job.getConsumedDiskMemory();
+		currentUsedTotalMemory -= job.getConsumedMemory();
+		
+	}
+
+	public Integer getTotalAvailableMemory() {
+		return totalAvailableMemory;
+	}
+
+	public Integer getTotalAvailableCPUs() {
+		return totalAvailableCPUs;
+	}
+
+	public Integer getTotalAvailableDiskMemory() {
+		return totalAvailableDiskMemory;
+	}
+
+	public Integer getCurrentUsedTotalMemory() {
+		return currentUsedTotalMemory;
+	}
+
+	public Integer getCurrentUsedTotalCPUs() {
+		return currentUsedTotalCPUs;
+	}
+
+	public Integer getCurrentUsedTotalDiskMemory() {
+		return currentUsedTotalDiskMemory;
+	}
 }
