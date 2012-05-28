@@ -2,6 +2,7 @@ package at.ac.tuwien.infosys.lsdc.simulation;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.tools.RandomGaussNumber;
 
 public class Simulation {
 	private static final String SIMULATION_PROPERTIES_FILENAME = "simulation_properties.json";
@@ -37,7 +38,6 @@ public class Simulation {
 	}
 
 	private static Integer generateNormalDistributedInteger(Integer lowerBound, Integer upperBound){
-		//TODO: find a way to generate a normal distributed integer between lowerBound and upperBound
-		return 5000;
+	return	RandomGaussNumber.newGaussianInt(lowerBound, upperBound);
 	}
 }
