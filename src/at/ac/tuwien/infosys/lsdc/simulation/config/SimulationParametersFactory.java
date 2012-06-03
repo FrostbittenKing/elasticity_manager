@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.lsdc.simulation;
+package at.ac.tuwien.infosys.lsdc.simulation.config;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
