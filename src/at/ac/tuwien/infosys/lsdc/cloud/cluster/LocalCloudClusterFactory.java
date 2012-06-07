@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParameters;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParametersFactory;
 
-public class LocalCloudClusterFactory implements CloudClusterFactory {
+public class LocalCloudClusterFactory implements ICloudClusterFactory {
 
 	private static final String SIMULATION_PROPERTIES_FILENAME = "simulation_properties.json";
 	
@@ -17,11 +17,11 @@ public class LocalCloudClusterFactory implements CloudClusterFactory {
 		
 	}
 	
-	public static CloudClusterFactory getInstance() {
+	public static ICloudClusterFactory getInstance() {
 		return _instance;
 	}
 	@Override
-	public ICloudCluster createCluster(HashMap<Integer, PhysicalMachine> machines) {
+	public ICloudClusterManager createLocalCluster(HashMap<Integer, PhysicalMachine> machines) {
 		return new CloudCluster(machines);
 	}
 

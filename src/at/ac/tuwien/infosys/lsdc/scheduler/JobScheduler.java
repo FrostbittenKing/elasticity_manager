@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudCluster;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterManager;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
@@ -28,13 +28,13 @@ public class JobScheduler implements IJobCompletionCallBack{
 	
 	private Integer currentCycleCosts = null;
 	*/
-	private ICloudCluster cloudCluster = null;
+	private ICloudClusterManager cloudCluster = null;
 	
 	private JobScheduler(){
 		
 	}
 	
-	public void initialize(ICloudCluster cloudCluster) {
+	public void initialize(ICloudClusterManager cloudCluster) {
 		this.cloudCluster = cloudCluster;
 	}
 	

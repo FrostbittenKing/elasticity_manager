@@ -9,9 +9,11 @@ import at.ac.tuwien.infosys.lsdc.scheduler.IJobCompletionCallBack;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 
-public class CloudCluster implements ICloudCluster,IJobCompletionCallBack {
+public class CloudCluster implements ICloudClusterManager,IJobCompletionCallBack {
 
-	private HashMap<Integer,PhysicalMachine> physicalMachines = null;
+	private HashMap<Integer, PhysicalMachine> physicalMachines = null;
+	private HashMap<Integer, PhysicalMachine> runningMachines = null;
+	private HashMap<Integer, PhysicalMachine> offlineMachines = null;
 	
 	
 	// store the overall available ressources in the cloud, as long as they are enough for a job, it should
@@ -20,27 +22,31 @@ public class CloudCluster implements ICloudCluster,IJobCompletionCallBack {
 	private Integer currentUsedCPUs = 0;
 	private Integer currentUsedDiskMemory = 0;
 	
-	private Integer totalMemory = null;
-	private Integer totalCPUs = null;
-	private Integer totalDiskMemory = null;
+	private Integer totalMemory = 0;
+	private Integer totalCPUs = 0;
+	private Integer totalDiskMemory = 0;
 	
 	private Integer currentCycleCosts = null;
 	
 	public CloudCluster(HashMap<Integer,PhysicalMachine> physicalMachines) {
 		this.physicalMachines = physicalMachines;
-		PhysicalMachine [] machines = (PhysicalMachine [])physicalMachines.values().toArray();
+		this.offlineMachines = new HashMap<Integer, PhysicalMachine>();
+		PhysicalMachine [] machines = (PhysicalMachine [])physicalMachines.values().toArray(new PhysicalMachine [physicalMachines.values().size()]);
 		
 		for (PhysicalMachine currentMachine : machines) {
 			totalCPUs += currentMachine.getCPUs();
 			totalDiskMemory += currentMachine.getDiskMemory();
 			totalMemory += currentMachine.getMemory();
+			
+			offlineMachines.put(currentMachine.getId(), currentMachine);
 		}
 		
 	}
 
 	@Override
 	public void addPhysicalMachine(PhysicalMachine machine) {
-		this.physicalMachines.put(machine.getId(), machine);	
+		this.physicalMachines.put(machine.getId(), machine);
+		this.offlineMachines.put(machine.getId(), machine);
 	}
 	
 	private Integer[] getRegisteredMachines() {
@@ -50,6 +56,7 @@ public class CloudCluster implements ICloudCluster,IJobCompletionCallBack {
 	@Override
 	public synchronized void addJob(Integer machineId, Job job) {
 		physicalMachines.get(machineId);
+		
 		//TODO start virtual machine in physical machine and put job in it
 	}
 
@@ -66,6 +73,16 @@ public class CloudCluster implements ICloudCluster,IJobCompletionCallBack {
 		currentUsedDiskMemory -= job.getConsumedDiskMemory();
 		currentUsedMemory -= job.getConsumedMemory();
 		
+	}
+
+	@Override
+	public Boolean startMachine() {
+		if (offlineMachines.isEmpty()) {
+			return false;
+		}
+		Integer nextMachineKey = offlineMachines.keySet().iterator().next();
+		runningMachines.put(nextMachineKey,offlineMachines.remove(nextMachineKey));
+		return true;
 	}
 	
 	

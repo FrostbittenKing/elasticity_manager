@@ -1,13 +1,8 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-import com.google.gson.Gson;
-
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.bus.BusListenerClientException;
 
 public class PhysicalMachine {
 	private Integer id = null;
@@ -16,20 +11,24 @@ public class PhysicalMachine {
 	private Integer diskMemory = null;
 	private Integer pricePerCycle = null;
 	private transient Boolean isRunning = false;
-	private transient MulticastSocket busSocket = null;
-	private transient int BusPort = 51235;
+	private transient HashMap<Integer,VirtualMachine> vms = new HashMap<Integer,VirtualMachine>();
 	
-	public void enableBusListener() throws BusListenerClientException {
-		try {
-			busSocket = new MulticastSocket(BusPort);
-			InetAddress group = InetAddress.getByName("224.0.0.0");
-			busSocket.joinGroup(group);
-		} catch (IOException e) {
-			throw new BusListenerClientException(e.getMessage());
-		}
+	private transient Integer currentMaxVMId = 0;
+	
+	public VirtualMachine startVirtualMachine(Integer neededDiskMemory,Integer neededMemory, Integer neededCPUS) {
+		VirtualMachine vm = new VirtualMachine(createVMId(),neededDiskMemory, neededMemory, neededCPUS);
+		vms.put(vm.getId(), vm);
+		return vm;
 	}
 	
+	private Integer createVMId() {
+		return ++currentMaxVMId;
+		
+	}
+
+	
 	public Integer getPricePerCycle() {
+
 		return pricePerCycle;
 	}
 	public Boolean isRunning() {
@@ -74,30 +73,4 @@ public class PhysicalMachine {
 				+ pricePerCycle + ", isRunning=" + isRunning + "]";
 	}
 	
-	private class BusListener implements Runnable {
-
-		private MulticastSocket socket;
-		
-		public BusListener(MulticastSocket socket) {
-			this.socket = socket;
-		}
-		
-		@Override
-		public void run() {
-			byte[] buf = new byte[1024];
-		    DatagramPacket packet = new DatagramPacket(buf, buf.length);
-		    String received = new String(packet.getData());
-		    Gson gson = new Gson();
-		    
-		    try {
-				socket.receive(packet);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			
-		}
-		
-	}
 }

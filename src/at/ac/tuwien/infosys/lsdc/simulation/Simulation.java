@@ -5,8 +5,8 @@ import java.io.FileNotFoundException;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudClusterFactory;
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudCluster;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterFactory;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterManager;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
@@ -22,8 +22,8 @@ public class Simulation {
 		try {
 			parameters = SimulationParametersFactory.getInstance().createParameters(SIMULATION_PROPERTIES_FILENAME);
 			
-			CloudClusterFactory cloudClusterFactory = LocalCloudClusterFactory.getInstance();
-			ICloudCluster cluster = cloudClusterFactory.createCluster(parameters.getPhysicalMachines());
+			ICloudClusterFactory cloudClusterFactory = LocalCloudClusterFactory.getInstance();
+			ICloudClusterManager cluster = cloudClusterFactory.createLocalCluster(parameters.getPhysicalMachines());
 
 			JobScheduler.getInstance().initialize(cluster);
 
@@ -32,7 +32,7 @@ public class Simulation {
 				Thread.sleep((long)parameters.getJobSchedulingDelay());
 			}
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
 

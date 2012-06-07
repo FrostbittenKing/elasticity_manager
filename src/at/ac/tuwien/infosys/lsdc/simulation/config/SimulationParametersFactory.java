@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
@@ -11,7 +12,7 @@ public class SimulationParametersFactory {
 	private static SimulationParametersFactory instance = null;
 	
 	private FileReader simulationPropertiesReader = null;
-	private Gson gson = new Gson();
+	private Gson gson = new GsonBuilder().registerTypeAdapter(SimulationParameters.class, new SimulationParametersDeserializer()).create();
 	
 	private SimulationParametersFactory(){
 		

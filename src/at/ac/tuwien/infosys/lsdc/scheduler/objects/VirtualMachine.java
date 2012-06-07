@@ -14,11 +14,14 @@ public class VirtualMachine implements IJobCompletionCallBack{
 	private Integer currentUsedTotalDiskMemory = 0;
 	
 	private Vector<Job> runningJobs = new Vector<Job>();
+	
+	private transient Integer id = 0;
 
-	public VirtualMachine(Integer diskSize, Integer memorySize, Integer numCPUs){
+	public VirtualMachine(Integer id, Integer diskSize, Integer memorySize, Integer numCPUs){
 		this.totalAvailableCPUs = numCPUs;
 		this.totalAvailableDiskMemory = diskSize;
 		this.totalAvailableMemory = memorySize;
+		this.id = id;
 	}
 	
 	public synchronized void addJob(Job job){
@@ -61,4 +64,14 @@ public class VirtualMachine implements IJobCompletionCallBack{
 	public Integer getCurrentUsedTotalDiskMemory() {
 		return currentUsedTotalDiskMemory;
 	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
+	
 }
