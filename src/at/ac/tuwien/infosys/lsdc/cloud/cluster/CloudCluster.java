@@ -31,6 +31,7 @@ public class CloudCluster implements ICloudClusterManager,IJobCompletionCallBack
 	public CloudCluster(HashMap<Integer,PhysicalMachine> physicalMachines) {
 		this.physicalMachines = physicalMachines;
 		this.offlineMachines = new HashMap<Integer, PhysicalMachine>();
+		this.runningMachines = new HashMap<Integer, PhysicalMachine>();
 		PhysicalMachine [] machines = (PhysicalMachine [])physicalMachines.values().toArray(new PhysicalMachine [physicalMachines.values().size()]);
 		
 		for (PhysicalMachine currentMachine : machines) {
@@ -83,6 +84,16 @@ public class CloudCluster implements ICloudClusterManager,IJobCompletionCallBack
 		Integer nextMachineKey = offlineMachines.keySet().iterator().next();
 		runningMachines.put(nextMachineKey,offlineMachines.remove(nextMachineKey));
 		return true;
+	}
+
+	@Override
+	public PhysicalMachine getPhysicalMachine(Integer id) {
+		return physicalMachines.get(id);
+	}
+
+	@Override
+	public PhysicalMachine[] getRunningMachines() {
+		return runningMachines.values().toArray(new PhysicalMachine[runningMachines.values().size()]);
 	}
 	
 	

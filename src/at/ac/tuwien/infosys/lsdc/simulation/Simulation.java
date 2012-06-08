@@ -26,6 +26,7 @@ public class Simulation {
 			ICloudClusterManager cluster = cloudClusterFactory.createLocalCluster(parameters.getPhysicalMachines());
 
 			JobScheduler.getInstance().initialize(cluster);
+	
 
 			for (int i = 0; i < parameters.getNumberOfJobs(); i++){
 				JobScheduler.getInstance().scheduleJob(createJob(parameters));

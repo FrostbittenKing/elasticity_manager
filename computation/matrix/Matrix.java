@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import matrix.twoDimensional.MatrixHelper;
+
 import com.sun.xml.internal.ws.model.FieldSignature;
 
 import sun.reflect.Reflection;
@@ -17,6 +19,7 @@ public class Matrix<T> {
 	private Object matrixObject = null;
 	private int[] dimensions;
 	private Class<?> type;
+
 
 	
 	public Class<?> getType() {
@@ -36,6 +39,7 @@ public class Matrix<T> {
 		/*for (Integer currentDimension : dimensions)  {
 		}*/
 		this.dimensions = dimensions;
+		
 		this.type = type;
 		try {
 			matrixObject = instantiateArray(Array.newInstance(type, dimensions));
@@ -81,8 +85,8 @@ public class Matrix<T> {
 					else  {
 						initializer = array.getClass().getComponentType().getConstructor(Short.TYPE);
 					}
-					Array.set(array, i, initializer.newInstance(0));
-
+					//Array.set(array, i, initializer.newInstance(0));
+					Array.set(array,i,null);
 
 				}
 			}
@@ -93,6 +97,14 @@ public class Matrix<T> {
 
 	public void setMatrix(Object... x) {
 		matrixObject = x;
+	}
+	
+	public boolean addRow(Object[] row) {
+		if(MatrixHelper.addRow(this, row) == null) {
+			return false;
+		}
+		
+		return true;
 	}
 
 	public void add(Matrix<T> array) {

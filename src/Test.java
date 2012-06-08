@@ -1,24 +1,80 @@
+import java.io.FileNotFoundException;
+
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterFactory;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterManager;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
+import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
+import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
+import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.PMLoadMatrix;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
+import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParameters;
+import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParametersFactory;
+import at.ac.tuwien.infosys.lsdc.tools.RandomGaussNumber;
 import matrix.Matrix;
-import matrix.twoDimensional.MatrixCalcHelper;
+import matrix.twoDimensional.MatrixHelper;
 
 
 public class Test {
 
-	/**
-	 * @param args
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws ClassNotFoundException 
-	 */
-	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+	private static final String SIMULATION_PROPERTIES_FILENAME = "simulation_properties.json";
+	public static void main(String[] args) throws JsonSyntaxException, JsonIOException, FileNotFoundException  {
 		// TODO Auto-generated method stub
 	
-		Matrix<Double> x = new Matrix<Double>(Double.class ,2,2);
-		Matrix<Double> y = new Matrix<Double>(Double.class ,2,2);
-		x.setMatrix(new Double[]{2.0,3.0},new Double[]{4.0,5.0});
-		y.setMatrix(new Double[]{4.0,5.0},new Double[]{6.0,7.0});
+		SimulationParameters parameters = SimulationParametersFactory.getInstance().createParameters(SIMULATION_PROPERTIES_FILENAME);
+		
+		ICloudClusterFactory cloudClusterFactory = LocalCloudClusterFactory.getInstance();
+		ICloudClusterManager cluster = cloudClusterFactory.createLocalCluster(parameters.getPhysicalMachines());
+
+		JobScheduler.getInstance().initialize(cluster);
+		Job job = createJob(parameters);
+		/*
+		PhysicalMachine machine = cluster.getPhysicalMachine(1);
+		
+		Resource currentUsedResources = machine.getUsedResources();
+		Resource totalResources = machine.getTotalResources();
+		currentUsedResources.addJob(job);
+		
+		
+		Matrix<Double> x = new Matrix<Double>(Double.class ,1,3);
+		Matrix<Double> y = new Matrix<Double>(Double.class ,1,3);
+		x.setMatrix(new Object[]{currentUsedResources.getResources()});
+		y.setMatrix(new Object[]{totalResources.getResources()});
 		x.divElement(y);
-		Matrix<Double>z = MatrixCalcHelper.calculateRowMean(x);
+		
+		PMLoadMatrix load = new PMLoadMatrix(1, 3);
+		PMLoadMatrix all = new PMLoadMatrix(1, 3);
+		load.addResource(currentUsedResources);
+		all.addResource(totalResources);
+		load.divElement(all);
+		Matrix<Double> foo = MatrixHelper.calculateRowMean(load);
+		*/
+		cluster.startMachine();
+		cluster.startMachine();
+		BestFit bestFit = new BestFit(cluster.getRunningMachines());
+		System.out.println(bestFit.getBestFittingMachine(job));
+		//Matrix<Double>z = MatrixHelper.calculateRowMean(x);
+	}
+	
+	private static Integer generateRandomInteger(Integer lowerBound, Integer upperBound){
+		return lowerBound + (int)(Math.random() * ((upperBound - lowerBound) + 1));
+	}
+	
+	private static Job createJob(SimulationParameters parameters){
+		return new Job(
+				generateRandomInteger(parameters.getMinDiskSize(), parameters.getMaxDiskSize()),
+				generateRandomInteger(parameters.getMinMemorySize(), parameters.getMaxMemorySize()),
+				generateRandomInteger(parameters.getMinCPUCount(), parameters.getMaxCPUCount()),
+				generateNormalDistributedInteger(parameters.getMinExecutionTime(), parameters.getMaxExecutionTime())
+		);
+	}
+
+	private static Integer generateNormalDistributedInteger(Integer lowerBound, Integer upperBound){
+	return	RandomGaussNumber.newGaussianInt(lowerBound, upperBound);
 	}
 
 }

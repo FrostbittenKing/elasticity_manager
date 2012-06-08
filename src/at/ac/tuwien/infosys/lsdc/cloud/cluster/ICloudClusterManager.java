@@ -8,4 +8,6 @@ public interface ICloudClusterManager {
 	Boolean jobFits(Job job);
 	void addJob(Integer machineId, Job job);
 	Boolean startMachine();
+	PhysicalMachine getPhysicalMachine(Integer id);
+	PhysicalMachine[] getRunningMachines();
 }
