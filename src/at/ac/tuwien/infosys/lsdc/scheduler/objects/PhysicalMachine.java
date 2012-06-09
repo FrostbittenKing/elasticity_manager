@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 
 
-public class PhysicalMachine implements IResourceInformation{
+public class PhysicalMachine extends Machine implements IResourceInformation{
 	private Integer id = null;
 	private Integer CPUs = null;
 	private Integer memory = null;
@@ -27,7 +27,7 @@ public class PhysicalMachine implements IResourceInformation{
 		usedMemory += neededMemory;
 		usedDiskMemory += neededDiskMemory;
 		
-		VirtualMachine vm = new VirtualMachine(createVMId(),neededDiskMemory, neededMemory, neededCPUS);
+		VirtualMachine vm = new VirtualMachine(this,createVMId(),neededDiskMemory, neededMemory, neededCPUS);
 		vms.put(vm.getId(), vm);
 		return vm;
 	}
