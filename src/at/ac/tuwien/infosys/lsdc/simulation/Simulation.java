@@ -1,8 +1,6 @@
 package at.ac.tuwien.infosys.lsdc.simulation;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.TimerTask;
+import java.util.Timer;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterManager;
@@ -11,41 +9,35 @@ import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParameters;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParametersFactory;
+import at.ac.tuwien.infosys.lsdc.simulation.monitor.Monitor;
 import at.ac.tuwien.infosys.lsdc.tools.RandomGaussNumber;
 
 public class Simulation {
 	private static final String SIMULATION_PROPERTIES_FILENAME = "simulation_properties.json";
-    private static final String MONITOR_OUTPUT_FILENAME = "monitorOutput.txt";
-
-    private File monitorOutputFile = null;
-    private FileOutputStream outputStream = null;
-
-    private class PerformanceMonitor extends TimerTask{
-
-        @Override
-        public void run() {
-            //To change body of implemented methods use File | Settings | File Templates.
-        }
-    }
+	private static final String MONITOR_OUTPUT_FILENAME = "monitorOutput.txt";
+	private static final Long MONITOR_POLLING_INTERVAL = 1000l;
+	
+	
+	private Timer timer = new Timer();
+	private Monitor monitor = null;
+	
 	public static void main(String [] args){
-        new Simulation().execute();
-    }
+		new Simulation().execute();
+	}
 
-    private void execute(){
-        monitorOutputFile = new File(MONITOR_OUTPUT_FILENAME);
-//        outputStream = new FileOutputStream()
-
-
+	private void execute(){
 		SimulationParameters parameters;
 		try {
 			parameters = SimulationParametersFactory.getInstance().createParameters(SIMULATION_PROPERTIES_FILENAME);
-			
+
 			ICloudClusterFactory cloudClusterFactory = LocalCloudClusterFactory.getInstance();
 			ICloudClusterManager cluster = cloudClusterFactory.createLocalCluster(parameters.getPhysicalMachines());
 
 			JobScheduler.getInstance().initialize(cluster);
-	
-
+			
+			monitor = new Monitor(MONITOR_OUTPUT_FILENAME);
+			timer.scheduleAtFixedRate(monitor, 0, MONITOR_POLLING_INTERVAL);
+			
 			for (int i = 0; i < parameters.getNumberOfJobs(); i++){
 				JobScheduler.getInstance().scheduleJob(createJob(parameters));
 				Thread.sleep((long)parameters.getJobSchedulingDelay());
@@ -69,6 +61,6 @@ public class Simulation {
 	}
 
 	private static Integer generateNormalDistributedInteger(Integer lowerBound, Integer upperBound){
-	return	RandomGaussNumber.newGaussianInt(lowerBound, upperBound);
+		return	RandomGaussNumber.newGaussianInt(lowerBound, upperBound);
 	}
 }
