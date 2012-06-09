@@ -1,19 +1,10 @@
-package matrix;
+package at.ac.tuwien.infosys.lsdc.scheduler.matrix;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 
-import matrix.twoDimensional.MatrixHelper;
-
-import com.sun.xml.internal.ws.model.FieldSignature;
-
-import sun.reflect.Reflection;
+import at.ac.tuwien.infosys.lsdc.scheduler.matrix.twoDimensional.MatrixHelper;
 
 public class Matrix<T> {
 	private Object matrixObject = null;
@@ -35,7 +26,7 @@ public class Matrix<T> {
 	}
 
 	public Matrix(Class<?> type, int...dimensions)  {
-		//matrix = type.cast(Array.newInstance(type.getComponentType(), dimensions[0]));
+		//at.ac.tuwien.infosys.lsdc.scheduler.matrix = type.cast(Array.newInstance(type.getComponentType(), dimensions[0]));
 		/*for (Integer currentDimension : dimensions)  {
 		}*/
 		this.dimensions = dimensions;

@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.heuristics;
 
-import matrix.Matrix;
-import matrix.twoDimensional.MatrixHelper;
+import at.ac.tuwien.infosys.lsdc.scheduler.matrix.Matrix;
+import at.ac.tuwien.infosys.lsdc.scheduler.matrix.twoDimensional.MatrixHelper;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;

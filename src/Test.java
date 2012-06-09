@@ -6,17 +6,12 @@ import com.google.gson.JsonSyntaxException;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterManager;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
-import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.PMLoadMatrix;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
-import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParameters;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParametersFactory;
 import at.ac.tuwien.infosys.lsdc.tools.RandomGaussNumber;
-import matrix.Matrix;
-import matrix.twoDimensional.MatrixHelper;
 
 
 public class Test {

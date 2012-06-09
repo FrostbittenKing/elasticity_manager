@@ -89,7 +89,6 @@ public class JobScheduler implements IJobCompletionCallBack{
 		return instance;
 	}
 
-	@Override
 	public synchronized void completeJob(Job job) {
 	/*	currentUsedCPUs -= job.getConsumedCPUs();
 		currentUsedDiskMemory -= job.getConsumedDiskMemory();

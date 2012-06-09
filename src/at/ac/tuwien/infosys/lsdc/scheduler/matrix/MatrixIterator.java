@@ -1,4 +1,4 @@
-package matrix;
+package at.ac.tuwien.infosys.lsdc.scheduler.matrix;
 
 import java.lang.reflect.Array;
 import java.util.Iterator;
@@ -15,18 +15,15 @@ public class MatrixIterator implements Iterator<Number[]> {
 			this.myMatrix[i] = (Number[])Array.get(myMatrix.getMatrixObject(),i);
 		}
 	}
-	
-	@Override
+
 	public boolean hasNext() {
 		return position < myMatrix.length;
 	}
 
-	@Override
 	public Number[] next() {
 		return myMatrix[position++];
 	}
 
-	@Override
 	public void remove() {
 		// TODO Auto-generated method stub
 		

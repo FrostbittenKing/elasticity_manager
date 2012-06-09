@@ -1,4 +1,4 @@
-package matrix;
+package at.ac.tuwien.infosys.lsdc.scheduler.matrix;
 
 public class MatrixIllegalOperationException extends RuntimeException {
 

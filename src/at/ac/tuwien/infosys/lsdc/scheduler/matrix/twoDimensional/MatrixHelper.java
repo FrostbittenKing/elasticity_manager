@@ -1,14 +1,14 @@
-package matrix.twoDimensional;
+package at.ac.tuwien.infosys.lsdc.scheduler.matrix.twoDimensional;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-import matrix.Matrix;
-import matrix.MatrixIllegalOperationException;
-import matrix.MatrixIterator;
-import matrix.MultiNumber;
+import at.ac.tuwien.infosys.lsdc.scheduler.matrix.Matrix;
+import at.ac.tuwien.infosys.lsdc.scheduler.matrix.MatrixIllegalOperationException;
+import at.ac.tuwien.infosys.lsdc.scheduler.matrix.MatrixIterator;
+import at.ac.tuwien.infosys.lsdc.scheduler.matrix.MultiNumber;
 
 public class MatrixHelper {
 	public static Matrix<Double> calculateRowMean(Matrix<?> matrix) {
@@ -126,9 +126,9 @@ public class MatrixHelper {
 			}
 			else return 0;
 		}/*
-		Class<?> matrixClass = matrix.getClass();
+		Class<?> matrixClass = at.ac.tuwien.infosys.lsdc.scheduler.matrix.getClass();
 		if (matrixClass != null && matrixClass.isArray()) {
-			depth += getDepth(Array.get(matrix, 0));
+			depth += getDepth(Array.get(at.ac.tuwien.infosys.lsdc.scheduler.matrix, 0));
 			return ++depth;
 		}
 		else {

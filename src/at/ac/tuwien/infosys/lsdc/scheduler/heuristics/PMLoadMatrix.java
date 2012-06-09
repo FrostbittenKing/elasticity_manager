@@ -1,7 +1,7 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.heuristics;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
-import matrix.Matrix;
+import at.ac.tuwien.infosys.lsdc.scheduler.matrix.Matrix;
 
 public class PMLoadMatrix extends Matrix<Number>{
 
