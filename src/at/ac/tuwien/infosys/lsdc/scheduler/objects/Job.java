@@ -10,8 +10,8 @@ public class Job implements Runnable{
 	private Integer consumedCPUs = null;
 	private Integer executionTime = null;
 //	private Integer priority = null;
-	private IJobEventListener callback = null;
-	private VirtualMachine virtualMachine = null;
+	private IJobEventListener cloudListener;
+	private IJobEventListener monitorListener;
 	
 	//TODO:  implement priority
 	
@@ -34,8 +34,9 @@ public class Job implements Runnable{
 			e.printStackTrace();
 		}
 		
-			virtualMachine.jobCompleted(this);
-			callback.jobCompleted(this);		
+		cloudListener.jobCompleted(this);
+		monitorListener.jobCompleted(this);
+					
 	}
 
 	public Integer getConsumedDiskMemory() {
@@ -73,13 +74,13 @@ public class Job implements Runnable{
 	public void setExecutionTime(Integer executionTime) {
 		this.executionTime = executionTime;
 	}
-	
-	public void setJobEventListener(IJobEventListener listener){
-		this.callback = listener;
+
+	public void setCloudListener(IJobEventListener cloudListener) {
+		this.cloudListener = cloudListener;
 	}
-	
-	public void setVirtualMachine(VirtualMachine vm){
-		this.virtualMachine = vm;
+
+	public void setMonitorListener(IJobEventListener monitorListener) {
+		this.monitorListener = monitorListener;
 	}
 
 	@Override

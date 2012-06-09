@@ -10,7 +10,7 @@ import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 
-public class CloudCluster implements ICloudClusterManager{
+public class CloudCluster implements IJobEventListener{
 
 	private HashMap<Integer, PhysicalMachine> physicalMachines = null;
 	private HashMap<Integer, PhysicalMachine> runningMachines = null;
@@ -45,7 +45,6 @@ public class CloudCluster implements ICloudClusterManager{
 		
 	}
 
-	@Override
 	public void addPhysicalMachine(PhysicalMachine machine) {
 		this.physicalMachines.put(machine.getId(), machine);
 		this.offlineMachines.put(machine.getId(), machine);
@@ -55,29 +54,12 @@ public class CloudCluster implements ICloudClusterManager{
 		return (Integer []) physicalMachines.keySet().toArray();
 	}
 
-	@Override
-	public synchronized void addJob(Integer machineId, Job job) {
-		physicalMachines.get(machineId);
-		
-		//TODO start virtual machine in physical machine and put job in it
-	}
-
-	@Override
 	public Boolean jobFits(Job job) {
 		return (totalCPUs - currentUsedCPUs >= job.getConsumedCPUs() &&
 		totalDiskMemory - currentUsedDiskMemory >= job.getConsumedDiskMemory() &&
 		totalMemory - currentUsedMemory >= job.getConsumedMemory());
 	}
 
-	@Override
-	public void jobCompleted(Job job) {
-		currentUsedCPUs -= job.getConsumedCPUs();
-		currentUsedDiskMemory -= job.getConsumedDiskMemory();
-		currentUsedMemory -= job.getConsumedMemory();
-		
-	}
-
-	@Override
 	public Boolean startMachine() {
 		if (offlineMachines.isEmpty()) {
 			return false;
@@ -87,17 +69,14 @@ public class CloudCluster implements ICloudClusterManager{
 		return true;
 	}
 
-	@Override
 	public PhysicalMachine getPhysicalMachine(Integer id) {
 		return physicalMachines.get(id);
 	}
 
-	@Override
 	public PhysicalMachine[] getRunningMachines() {
 		return runningMachines.values().toArray(new PhysicalMachine[runningMachines.values().size()]);
 	}
 
-	@Override
 	public ArrayList<PhysicalMachineUsage> getUsage() {
 		ArrayList<PhysicalMachineUsage> physicalMachineUsage = new ArrayList<PhysicalMachineUsage>();
 		for (PhysicalMachine currentPM : runningMachines.values()){
@@ -105,5 +84,19 @@ public class CloudCluster implements ICloudClusterManager{
 					
 		}
 		return physicalMachineUsage;
+	}
+
+	@Override
+	public void jobAdded(Job job) {
+		currentUsedCPUs += job.getConsumedCPUs();
+		currentUsedDiskMemory += job.getConsumedDiskMemory();
+		currentUsedMemory += job.getConsumedMemory();		
 	}	
+	
+	@Override
+	public void jobCompleted(Job job) {
+		currentUsedCPUs -= job.getConsumedCPUs();
+		currentUsedDiskMemory -= job.getConsumedDiskMemory();
+		currentUsedMemory -= job.getConsumedMemory();
+	}
 }

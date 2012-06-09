@@ -29,7 +29,6 @@ public class VirtualMachine{
 		currentUsedTotalCPUs += job.getConsumedCPUs();
 		currentUsedTotalDiskMemory += job.getConsumedDiskMemory();
 		currentUsedTotalMemory += job.getConsumedMemory();
-		job.setVirtualMachine(this);
 		new Thread(job).start();
 	}
 	

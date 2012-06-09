@@ -2,8 +2,6 @@ package at.ac.tuwien.infosys.lsdc.simulation;
 
 import java.util.Timer;
 
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterFactory;
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterManager;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
@@ -29,10 +27,7 @@ public class Simulation {
 		try {
 			parameters = SimulationParametersFactory.getInstance().createParameters(SIMULATION_PROPERTIES_FILENAME);
 
-			ICloudClusterFactory cloudClusterFactory = LocalCloudClusterFactory.getInstance();
-			ICloudClusterManager cluster = cloudClusterFactory.createLocalCluster(parameters.getPhysicalMachines());
-
-			JobScheduler.getInstance().initialize(cluster);
+			JobScheduler.getInstance().initialize(parameters.getPhysicalMachines());
 			
 			monitor = new Monitor(MONITOR_OUTPUT_FILENAME);
 			timer.scheduleAtFixedRate(monitor, 0, MONITOR_POLLING_INTERVAL);

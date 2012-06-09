@@ -1,9 +1,11 @@
 package at.ac.tuwien.infosys.lsdc.scheduler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterManager;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
@@ -29,18 +31,17 @@ public class JobScheduler{
 	}
 	private static JobScheduler instance = null;
 	
-	private ICloudClusterManager cloudCluster = null;
+	private CloudCluster cloudCluster = null;
 	private PolicyLevel currentPolicyLevel;
-	private IJobEventListener listener;
+	private IJobEventListener monitorListener;
 	
 	private JobScheduler(){
 		
 	}
 	
-	public void initialize(ICloudClusterManager cloudCluster) {
-		this.cloudCluster = cloudCluster;
-	}
-	
+	public void initialize(HashMap<Integer, PhysicalMachine> physicalMachines){
+		cloudCluster = LocalCloudClusterFactory.getInstance().createLocalCluster(physicalMachines);
+	}	
 	
 	public synchronized void scheduleJob(Job job){
 		System.out.println("Scheduled job: " + job + " , WOOHOO!");
@@ -64,7 +65,10 @@ public class JobScheduler{
 						 * create virtual machine --- take policy level into account when creating new virtual machine ---
 						 * add job new virtual machine
 						 */
-						listener.jobAdded(null);
+						job.setMonitorListener(monitorListener);
+						job.setCloudListener(cloudCluster);
+						cloudCluster.jobAdded(job);
+						monitorListener.jobAdded(job);
 					}
 				}
 				else{
@@ -73,7 +77,10 @@ public class JobScheduler{
 					 * --- take policy level into account when creating new virtual machine ---
 					 * add job to running virtual machine
 					 */
-					listener.jobAdded(null);
+					job.setMonitorListener(monitorListener);
+					job.setCloudListener(cloudCluster);
+					cloudCluster.jobAdded(job);
+					monitorListener.jobAdded(job);
 				}
 			}
 			else {
@@ -121,10 +128,6 @@ public class JobScheduler{
 			instance = new JobScheduler();
 		}
 		return instance;
-	}
-
-	public void jobCompleted(Job job) {
-		cloudCluster.jobCompleted(job);
 	}
 
     public ArrayList<PhysicalMachineUsage> getCurrentUsage(){
