@@ -14,4 +14,5 @@ public interface ICloudClusterManager {
 	PhysicalMachine getPhysicalMachine(Integer id);
 	PhysicalMachine[] getRunningMachines();
 	ArrayList<PhysicalMachineUsage> getUsage();
+	void jobCompleted(Job job);
 }

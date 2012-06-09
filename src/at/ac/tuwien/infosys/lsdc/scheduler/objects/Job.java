@@ -2,7 +2,7 @@ package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
 import java.util.ArrayList;
 
-import at.ac.tuwien.infosys.lsdc.scheduler.IJobCompletionCallBack;
+import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 
 public class Job implements Runnable{
 	private Integer consumedDiskMemory = null;
@@ -10,7 +10,8 @@ public class Job implements Runnable{
 	private Integer consumedCPUs = null;
 	private Integer executionTime = null;
 //	private Integer priority = null;
-	private ArrayList<IJobCompletionCallBack> callbacks = new ArrayList<IJobCompletionCallBack>();
+	private IJobEventListener callback = null;
+	private VirtualMachine virtualMachine = null;
 	
 	//TODO:  implement priority
 	
@@ -33,13 +34,8 @@ public class Job implements Runnable{
 			e.printStackTrace();
 		}
 		
-		for(IJobCompletionCallBack currentCallback : callbacks){
-			currentCallback.completeJob(this);
-		}		
-	}
-	
-	public void addCallback(IJobCompletionCallBack callback){
-		callbacks.add(callback);
+			virtualMachine.jobCompleted(this);
+			callback.jobCompleted(this);		
 	}
 
 	public Integer getConsumedDiskMemory() {
@@ -77,17 +73,19 @@ public class Job implements Runnable{
 	public void setExecutionTime(Integer executionTime) {
 		this.executionTime = executionTime;
 	}
+	
+	public void setJobEventListener(IJobEventListener listener){
+		this.callback = listener;
+	}
+	
+	public void setVirtualMachine(VirtualMachine vm){
+		this.virtualMachine = vm;
+	}
 
 	@Override
 	public String toString() {
 		return "Job [size=" + consumedDiskMemory + ", consumedMemory=" + consumedMemory
 				+ ", consumedCPUs=" + consumedCPUs + ", executionTime="
 				+ executionTime + "]";
-	}
-	
-//	public void setPriority(Integer priority) {
-//		this.priority = priority;
-//	}
-	
-	
+	}	
 }

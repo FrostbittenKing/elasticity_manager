@@ -2,9 +2,9 @@ package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
 import java.util.Vector;
 
-import at.ac.tuwien.infosys.lsdc.scheduler.IJobCompletionCallBack;
+import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 
-public class VirtualMachine implements IJobCompletionCallBack{
+public class VirtualMachine{
 	private Integer totalAvailableMemory = null;
 	private Integer totalAvailableCPUs = null;
 	private Integer totalAvailableDiskMemory = null;
@@ -29,16 +29,15 @@ public class VirtualMachine implements IJobCompletionCallBack{
 		currentUsedTotalCPUs += job.getConsumedCPUs();
 		currentUsedTotalDiskMemory += job.getConsumedDiskMemory();
 		currentUsedTotalMemory += job.getConsumedMemory();
-		(new Thread(job)).start();
+		job.setVirtualMachine(this);
+		new Thread(job).start();
 	}
 	
-	@Override
-	public synchronized void completeJob(Job job) {
+	public void jobCompleted(Job job) {
 		runningJobs.remove(job);
 		currentUsedTotalCPUs -= job.getConsumedCPUs();
 		currentUsedTotalDiskMemory -= job.getConsumedDiskMemory();
-		currentUsedTotalMemory -= job.getConsumedMemory();
-		
+		currentUsedTotalMemory -= job.getConsumedMemory();	
 	}
 
 	public Integer getTotalAvailableMemory() {
@@ -72,6 +71,4 @@ public class VirtualMachine implements IJobCompletionCallBack{
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	
-	
 }

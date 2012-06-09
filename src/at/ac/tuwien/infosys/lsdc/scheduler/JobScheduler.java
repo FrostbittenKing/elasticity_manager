@@ -9,7 +9,7 @@ import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 
-public class JobScheduler implements IJobCompletionCallBack{
+public class JobScheduler{
 	public enum PolicyLevel{
 		GREEN(0.2),
 		GREEN_ORANGE(0.15),
@@ -31,6 +31,7 @@ public class JobScheduler implements IJobCompletionCallBack{
 	
 	private ICloudClusterManager cloudCluster = null;
 	private PolicyLevel currentPolicyLevel;
+	private IJobEventListener listener;
 	
 	private JobScheduler(){
 		
@@ -63,6 +64,7 @@ public class JobScheduler implements IJobCompletionCallBack{
 						 * create virtual machine --- take policy level into account when creating new virtual machine ---
 						 * add job new virtual machine
 						 */
+						listener.jobAdded(null);
 					}
 				}
 				else{
@@ -70,7 +72,8 @@ public class JobScheduler implements IJobCompletionCallBack{
 					 * create new virtual machine on running physical machine
 					 * --- take policy level into account when creating new virtual machine ---
 					 * add job to running virtual machine
-					 */ 
+					 */
+					listener.jobAdded(null);
 				}
 			}
 			else {
@@ -120,11 +123,8 @@ public class JobScheduler implements IJobCompletionCallBack{
 		return instance;
 	}
 
-	public synchronized void completeJob(Job job) {
-	/*	currentUsedCPUs -= job.getConsumedCPUs();
-		currentUsedDiskMemory -= job.getConsumedDiskMemory();
-		currentUsedMemory -= job.getConsumedMemory();
-		*/
+	public void jobCompleted(Job job) {
+		cloudCluster.jobCompleted(job);
 	}
 
     public ArrayList<PhysicalMachineUsage> getCurrentUsage(){

@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.Set;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.bus.BusListenerClientException;
-import at.ac.tuwien.infosys.lsdc.scheduler.IJobCompletionCallBack;
+import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 
-public class CloudCluster implements ICloudClusterManager,IJobCompletionCallBack {
+public class CloudCluster implements ICloudClusterManager{
 
 	private HashMap<Integer, PhysicalMachine> physicalMachines = null;
 	private HashMap<Integer, PhysicalMachine> runningMachines = null;
@@ -70,7 +70,7 @@ public class CloudCluster implements ICloudClusterManager,IJobCompletionCallBack
 	}
 
 	@Override
-	public synchronized void completeJob(Job job) {
+	public void jobCompleted(Job job) {
 		currentUsedCPUs -= job.getConsumedCPUs();
 		currentUsedDiskMemory -= job.getConsumedDiskMemory();
 		currentUsedMemory -= job.getConsumedMemory();
