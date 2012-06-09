@@ -8,6 +8,7 @@ import at.ac.tuwien.infosys.lsdc.cloud.cluster.bus.BusListenerClientException;
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobCompletionCallBack;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
+import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 
 public class CloudCluster implements ICloudClusterManager,IJobCompletionCallBack {
 
@@ -95,7 +96,14 @@ public class CloudCluster implements ICloudClusterManager,IJobCompletionCallBack
 	public PhysicalMachine[] getRunningMachines() {
 		return runningMachines.values().toArray(new PhysicalMachine[runningMachines.values().size()]);
 	}
-	
-	
-	
+
+	@Override
+	public ArrayList<PhysicalMachineUsage> getUsage() {
+		ArrayList<PhysicalMachineUsage> physicalMachineUsage = new ArrayList<PhysicalMachineUsage>();
+		for (PhysicalMachine currentPM : runningMachines.values()){
+			physicalMachineUsage.add(new PhysicalMachineUsage(currentPM.getUsedResources(), currentPM.getTotalResources()));
+					
+		}
+		return physicalMachineUsage;
+	}	
 }

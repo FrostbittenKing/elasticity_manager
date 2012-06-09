@@ -3,7 +3,11 @@ package at.ac.tuwien.infosys.lsdc.simulation.monitor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.TimerTask;
+
+import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
+import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 
 public class Monitor extends TimerTask{
 	private File outputFile;
@@ -17,7 +21,7 @@ public class Monitor extends TimerTask{
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		ArrayList<PhysicalMachineUsage> currentUsage = JobScheduler.getInstance().getCurrentUsage();
 		
 	}
 

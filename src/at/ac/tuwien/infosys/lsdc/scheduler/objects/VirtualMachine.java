@@ -29,7 +29,7 @@ public class VirtualMachine implements IJobCompletionCallBack{
 		currentUsedTotalCPUs += job.getConsumedCPUs();
 		currentUsedTotalDiskMemory += job.getConsumedDiskMemory();
 		currentUsedTotalMemory += job.getConsumedMemory();
-		(new Thread(job)).run();
+		(new Thread(job)).start();
 	}
 	
 	@Override
