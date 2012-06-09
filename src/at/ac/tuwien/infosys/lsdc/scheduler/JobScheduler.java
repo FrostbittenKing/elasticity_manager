@@ -1,7 +1,12 @@
 package at.ac.tuwien.infosys.lsdc.scheduler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.ICloudClusterManager;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
@@ -9,6 +14,7 @@ import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 public class JobScheduler implements IJobCompletionCallBack{
 	private static JobScheduler instance = null;
 	
+	/*
 	private ArrayList<PhysicalMachine> physicalMachines = new ArrayList<PhysicalMachine>();
 	private ArrayList<VirtualMachine> virtualMachines = new ArrayList<VirtualMachine>();
 	
@@ -21,35 +27,46 @@ public class JobScheduler implements IJobCompletionCallBack{
 	private Integer totalDiskMemory = null;
 	
 	private Integer currentCycleCosts = null;
+	*/
+	private ICloudClusterManager cloudCluster = null;
 	
 	private JobScheduler(){
 		
 	}
 	
-	public void initialize(ArrayList<PhysicalMachine> physicalMachines){
+	public void initialize(ICloudClusterManager cloudCluster) {
+		this.cloudCluster = cloudCluster;
+	}
+	
+/*	public void initialize(HashMap<Integer,PhysicalMachine> physicalMachines){
 		totalMemory = 0;
 		totalCPUs = 0;
 		totalDiskMemory = 0;
 		currentCycleCosts = 0;
 		
 		this.physicalMachines.clear();
+		PhysicalMachine [] machines = (PhysicalMachine [])physicalMachines.values().toArray();
 		
-		for (PhysicalMachine currentMachine : physicalMachines){
+		
+		for (PhysicalMachine currentMachine : machines){
 			this.physicalMachines.add(currentMachine);
 			totalCPUs += currentMachine.getCPUs();
 			totalDiskMemory += currentMachine.getDiskMemory();
 			totalMemory += currentMachine.getMemory();
 			System.out.println("Added phyiscal machine: " + currentMachine);
 		}
-	}
+		
+	}*/
 	
 	public synchronized void scheduleJob(Job job){
 		System.out.println("Scheduled job: " + job + " , WOOHOO!");
 		
-		if (totalCPUs - currentUsedCPUs >= job.getConsumedCPUs() &&
+		if (cloudCluster.jobFits(job)) {
+/*		if (totalCPUs - currentUsedCPUs >= job.getConsumedCPUs() &&
 			totalDiskMemory - currentUsedDiskMemory >= job.getConsumedDiskMemory() &&
 			totalMemory - currentUsedMemory >= job.getConsumedMemory()){
 			//job might be fit in somewhere, main scheduling algorithm takes place here
+*/
 		}
 		else{
 			//TODO: job doesn't fit, outsource to other cloud
@@ -74,9 +91,10 @@ public class JobScheduler implements IJobCompletionCallBack{
 
 	@Override
 	public synchronized void completeJob(Job job) {
-		currentUsedCPUs -= job.getConsumedCPUs();
+	/*	currentUsedCPUs -= job.getConsumedCPUs();
 		currentUsedDiskMemory -= job.getConsumedDiskMemory();
 		currentUsedMemory -= job.getConsumedMemory();
+		*/
 	}
 
 }

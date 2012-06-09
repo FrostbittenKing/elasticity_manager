@@ -1,6 +1,7 @@
-package at.ac.tuwien.infosys.lsdc.simulation;
+package at.ac.tuwien.infosys.lsdc.simulation.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 
@@ -36,7 +37,7 @@ public class SimulationParameters {
 		this.jobSchedulingDelay = jobSchedulingDelay;
 	}
 
-	private ArrayList<PhysicalMachine> physicalMachines = null;
+	private HashMap<Integer,PhysicalMachine> physicalMachines = null;
 	
 	public Integer getMinExecutionTime() {
 		return minExecutionTime;
@@ -78,7 +79,7 @@ public class SimulationParameters {
 		return maxDiskSize;
 	}
 
-	public ArrayList<PhysicalMachine> getPhysicalMachines() {
+	public HashMap<Integer,PhysicalMachine> getPhysicalMachines() {
 		return physicalMachines;
 	}
 
@@ -106,7 +107,7 @@ public class SimulationParameters {
 		this.maxDiskSize = maxDiskSize;
 	}
 
-	public void setPhysicalMachines(ArrayList<PhysicalMachine> physicalMachines) {
+	public void setPhysicalMachines(HashMap<Integer,PhysicalMachine> physicalMachines) {
 		this.physicalMachines = physicalMachines;
 	}	
 }
