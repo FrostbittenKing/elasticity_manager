@@ -2,7 +2,6 @@ package at.ac.tuwien.infosys.lsdc.scheduler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
@@ -27,20 +26,21 @@ public class JobScheduler {
 	}
 
 	private static JobScheduler instance = null;
-	
+
 	private CloudCluster cloudCluster = null;
 	private PolicyLevel currentPolicyLevel;
 	private IJobEventListener monitorListener;
-	
-	private JobScheduler(){
-		
+
+	private JobScheduler() {
+
 	}
-	
-	public void initialize(HashMap<Integer, PhysicalMachine> physicalMachines){
-		cloudCluster = LocalCloudClusterFactory.getInstance().createLocalCluster(physicalMachines);
-	}	
-	
-	public synchronized void scheduleJob(Job job){
+
+	public void initialize(HashMap<Integer, PhysicalMachine> physicalMachines) {
+		cloudCluster = LocalCloudClusterFactory.getInstance()
+				.createLocalCluster(physicalMachines);
+	}
+
+	public synchronized void scheduleJob(Job job) {
 		System.out.println("Scheduled job: " + job + " , WOOHOO!");
 
 		if (cloudCluster.jobFits(job)) {
@@ -129,8 +129,11 @@ public class JobScheduler {
 		return instance;
 	}
 
+	public ArrayList<PhysicalMachineUsage> getCurrentUsage() {
+		return cloudCluster.getUsage();
+	}
 
-    public ArrayList<PhysicalMachineUsage> getCurrentUsage(){
-        return cloudCluster.getUsage();
-    }
+	public CloudCluster getCluster() {
+		return this.cloudCluster;
+	}
 }
