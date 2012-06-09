@@ -50,6 +50,7 @@ public class Test {
 		*/
 		cluster.startMachine();
 		cluster.startMachine();
+		cluster.startMachine();
 		BestFit bestFit = new BestFit(cluster.getRunningMachines());
 		System.out.println(bestFit.getBestFittingMachine(job));
 		//Matrix<Double>z = MatrixHelper.calculateRowMean(x);
