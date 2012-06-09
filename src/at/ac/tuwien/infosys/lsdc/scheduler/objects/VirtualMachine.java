@@ -2,9 +2,11 @@ package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
 import java.util.Vector;
 
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 
-public class VirtualMachine{
+public class VirtualMachine implements IResourceInformation{
 	private Integer totalAvailableMemory = null;
 	private Integer totalAvailableCPUs = null;
 	private Integer totalAvailableDiskMemory = null;
@@ -70,4 +72,16 @@ public class VirtualMachine{
 	public void setId(Integer id) {
 		this.id = id;
 	}
+
+	@Override
+	public Resource getUsedResources() {
+		return new Resource(id, currentUsedTotalCPUs, currentUsedTotalMemory, currentUsedTotalDiskMemory);
+	}
+
+	@Override
+	public Resource getTotalResources() {
+		return new Resource(id, totalAvailableCPUs, totalAvailableMemory, totalAvailableDiskMemory);
+	}
+	
+	
 }

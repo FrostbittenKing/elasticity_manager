@@ -8,6 +8,7 @@ import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParameters;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParametersFactory;
 import at.ac.tuwien.infosys.lsdc.tools.RandomGaussNumber;
@@ -50,7 +51,7 @@ public class Test {
 		cluster.startMachine();
 		cluster.startMachine();
 		cluster.startMachine();
-		BestFit bestFit = new BestFit(cluster.getRunningMachines());
+		BestFit<PhysicalMachine> bestFit = new BestFit<PhysicalMachine>(cluster.getRunningMachines());
 		System.out.println(bestFit.getBestFittingMachine(job));
 		//Matrix<Double>z = MatrixHelper.calculateRowMean(x);
 	}

@@ -2,21 +2,22 @@ package at.ac.tuwien.infosys.lsdc.scheduler.heuristics;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.matrix.Matrix;
 import at.ac.tuwien.infosys.lsdc.scheduler.matrix.twoDimensional.MatrixHelper;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
-import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 
-public class BestFit {
+
+public class BestFit<T extends IResourceInformation> {
 	
 	private static final Integer NUMBER_OF_ATTRIBUTES = 3;
 	
-	PhysicalMachine[] machines = null;
+	T[] machines = null;
 	
-	public BestFit(PhysicalMachine[] machines) {
+	public BestFit(T[] machines) {
 		this.machines = machines;
 	}
 	
-	public void setRunningMachines(PhysicalMachine[] machines) {
+	public void setRunningMachines(T[] machines) {
 		this.machines = machines;
 	}
 	
@@ -38,12 +39,12 @@ public class BestFit {
 		int nrOfMachines = machines.length;
 		Resource [] currentUsedResources = new Resource[nrOfMachines];
 		Resource [] totalResources = new Resource[nrOfMachines];
-		PMLoadMatrix loadMatrix = new PMLoadMatrix(NUMBER_OF_ATTRIBUTES, nrOfMachines);
-		PMLoadMatrix allAvailable = new PMLoadMatrix(NUMBER_OF_ATTRIBUTES, nrOfMachines);
+		LoadMatrix loadMatrix = new LoadMatrix(NUMBER_OF_ATTRIBUTES, nrOfMachines);
+		LoadMatrix allAvailable = new LoadMatrix(NUMBER_OF_ATTRIBUTES, nrOfMachines);
 		
 		int machinecount = 0;
 		Resource currentResource;
-		for (PhysicalMachine currentMachine : machines) {
+		for (T currentMachine : machines) {
 			currentResource = currentMachine.getUsedResources();
 			currentResource.addJob(job);
 			currentUsedResources[machinecount] = currentResource;

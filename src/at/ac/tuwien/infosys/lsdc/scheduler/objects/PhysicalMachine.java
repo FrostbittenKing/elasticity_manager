@@ -2,10 +2,11 @@ package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
 import java.util.HashMap;
 
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 
 
-public class PhysicalMachine {
+public class PhysicalMachine implements IResourceInformation{
 	private Integer id = null;
 	private Integer CPUs = null;
 	private Integer memory = null;
