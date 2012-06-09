@@ -24,7 +24,6 @@ public class Simulation {
 	public static void main(String [] args){
 		new Simulation().execute();
 	}
-
 	private void execute(){
 		SimulationParameters parameters;
 		try {
@@ -40,24 +39,28 @@ public class Simulation {
 			
 			for (int i = 0; i < parameters.getNumberOfJobs(); i++){
 				JobScheduler.getInstance().scheduleJob(createJob(parameters));
-				Thread.sleep((long)parameters.getJobSchedulingDelay());
+				Thread.sleep((long) parameters.getJobSchedulingDelay());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static Job createJob(SimulationParameters parameters){
-		return new Job(
-				generateRandomInteger(parameters.getMinDiskSize(), parameters.getMaxDiskSize()),
-				generateRandomInteger(parameters.getMinMemorySize(), parameters.getMaxMemorySize()),
-				generateRandomInteger(parameters.getMinCPUCount(), parameters.getMaxCPUCount()),
-				generateNormalDistributedInteger(parameters.getMinExecutionTime(), parameters.getMaxExecutionTime())
-		);
+	private static Job createJob(SimulationParameters parameters) {
+		return new Job(generateRandomInteger(parameters.getMinDiskSize(),
+				parameters.getMaxDiskSize()), generateRandomInteger(
+				parameters.getMinMemorySize(), parameters.getMaxMemorySize()),
+				generateRandomInteger(parameters.getMinCPUCount(),
+						parameters.getMaxCPUCount()),
+				generateNormalDistributedInteger(
+						parameters.getMinExecutionTime(),
+						parameters.getMaxExecutionTime()));
 	}
 
-	private static Integer generateRandomInteger(Integer lowerBound, Integer upperBound){
-		return lowerBound + (int)(Math.random() * ((upperBound - lowerBound) + 1));
+	private static Integer generateRandomInteger(Integer lowerBound,
+			Integer upperBound) {
+		return lowerBound
+				+ (int) (Math.random() * ((upperBound - lowerBound) + 1));
 	}
 
 	private static Integer generateNormalDistributedInteger(Integer lowerBound, Integer upperBound){
