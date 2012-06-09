@@ -2,7 +2,6 @@ package at.ac.tuwien.infosys.lsdc.scheduler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
@@ -13,34 +12,42 @@ import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 
 public class JobScheduler {
 	public enum PolicyLevel {
-		GREEN(0.2), GREEN_ORANGE(0.15), ORANGE(0.1), ORANGE_RED(0.05), RED(0.0);
+		GREEN(0.2, 0.5), GREEN_ORANGE(0.15, 0.6), ORANGE(0.1, 0.7), ORANGE_RED(
+				0.05, 0.8), RED(0.0, 0.9);
 
-		private PolicyLevel(Double overBudget) {
+		private PolicyLevel(Double overBudget, Double threshHold) {
 			this.overBudget = overBudget;
+			this.threshHold = threshHold;
 		}
 
 		public Double getOverBudget() {
 			return overBudget;
 		}
 
+		public Double getThreshold() {
+			return threshHold;
+		}
+
 		private Double overBudget;
+		private Double threshHold;
 	}
 
 	private static JobScheduler instance = null;
-	
+
 	private CloudCluster cloudCluster = null;
 	private PolicyLevel currentPolicyLevel;
 	private IJobEventListener monitorListener;
-	
-	private JobScheduler(){
-		
+
+	private JobScheduler() {
+
 	}
-	
-	public void initialize(HashMap<Integer, PhysicalMachine> physicalMachines){
-		cloudCluster = LocalCloudClusterFactory.getInstance().createLocalCluster(physicalMachines);
-	}	
-	
-	public synchronized void scheduleJob(Job job){
+
+	public void initialize(HashMap<Integer, PhysicalMachine> physicalMachines) {
+		cloudCluster = LocalCloudClusterFactory.getInstance()
+				.createLocalCluster(physicalMachines);
+	}
+
+	public synchronized void scheduleJob(Job job) {
 		System.out.println("Scheduled job: " + job + " , WOOHOO!");
 
 		if (cloudCluster.jobFits(job)) {
@@ -129,8 +136,12 @@ public class JobScheduler {
 		return instance;
 	}
 
+	public ArrayList<PhysicalMachineUsage> getCurrentUsage() {
+		return cloudCluster.getUsage();
+	}
 
-    public ArrayList<PhysicalMachineUsage> getCurrentUsage(){
-        return cloudCluster.getUsage();
-    }
+	public CloudCluster getCluster() {
+		return this.cloudCluster;
+	}
+
 }
