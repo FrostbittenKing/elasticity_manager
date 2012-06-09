@@ -1,6 +1,5 @@
 package at.ac.tuwien.infosys.lsdc.simulation.config;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
