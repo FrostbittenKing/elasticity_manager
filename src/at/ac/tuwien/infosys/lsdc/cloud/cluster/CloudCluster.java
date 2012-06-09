@@ -16,7 +16,7 @@ public class CloudCluster implements ICloudClusterManager,IJobCompletionCallBack
 	private HashMap<Integer, PhysicalMachine> offlineMachines = null;
 	
 	
-	// store the overall available ressources in the cloud, as long as they are enough for a job, it should
+	// store the overall available resources in the cloud, as long as they are enough for a job, it should
 	// be possible to migrate some jobs to other machines to fit the waiting job in somewhere
 	private Integer currentUsedMemory = 0;
 	private Integer currentUsedCPUs = 0;
@@ -32,7 +32,7 @@ public class CloudCluster implements ICloudClusterManager,IJobCompletionCallBack
 		this.physicalMachines = physicalMachines;
 		this.offlineMachines = new HashMap<Integer, PhysicalMachine>();
 		this.runningMachines = new HashMap<Integer, PhysicalMachine>();
-		PhysicalMachine [] machines = (PhysicalMachine [])physicalMachines.values().toArray(new PhysicalMachine [physicalMachines.values().size()]);
+		PhysicalMachine [] machines = physicalMachines.values().toArray(new PhysicalMachine [physicalMachines.values().size()]);
 		
 		for (PhysicalMachine currentMachine : machines) {
 			totalCPUs += currentMachine.getCPUs();

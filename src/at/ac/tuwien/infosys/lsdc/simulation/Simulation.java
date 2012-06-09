@@ -1,6 +1,9 @@
 package at.ac.tuwien.infosys.lsdc.simulation;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.TimerTask;
 
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -16,7 +19,26 @@ import at.ac.tuwien.infosys.lsdc.tools.RandomGaussNumber;
 
 public class Simulation {
 	private static final String SIMULATION_PROPERTIES_FILENAME = "simulation_properties.json";
-	public static void main(String [] args) throws InterruptedException{
+    private static final String MONITOR_OUTPUT_FILENAME = "monitorOutput.txt";
+
+    private File monitorOutputFile = null;
+    private FileOutputStream outputStream = null;
+
+    private class PerformanceMonitor extends TimerTask{
+
+        @Override
+        public void run() {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
+    }
+	public static void main(String [] args){
+        new Simulation().execute();
+    }
+
+    private void execute(){
+        monitorOutputFile = new File(MONITOR_OUTPUT_FILENAME);
+//        outputStream = new FileOutputStream()
+
 
 		SimulationParameters parameters;
 		try {

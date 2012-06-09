@@ -96,4 +96,7 @@ public class JobScheduler implements IJobCompletionCallBack{
 		*/
 	}
 
+    public Object getCurrentUsage(){
+        return null;
+    }
 }
