@@ -5,8 +5,11 @@ public abstract class Job implements Runnable{
 	protected Integer consumedMemory = null;
 	protected Integer consumedCPUs = null;
 	protected Long remainingExecutionTime = null;
-	protected Double executionCosts;
 	protected Long lastStartTime;
+	
+	protected Job(){
+		
+	}
 	
 	protected Job(Integer size, Integer consumedMemory, Integer consumedCPUs,
 			Long executionTime) {
@@ -15,9 +18,45 @@ public abstract class Job implements Runnable{
 		this.consumedMemory = consumedMemory;
 		this.consumedCPUs = consumedCPUs;
 		this.remainingExecutionTime = executionTime;
-		this.executionCosts = 0.0;
+	}
+	
+	public Integer getConsumedDiskMemory() {
+		return consumedDiskMemory;
 	}
 
-	protected abstract void calculateExecutionCosts(Long executedTime);
+	public Integer getConsumedMemory() {
+		return consumedMemory;
+	}
 
+	public Integer getConsumedCPUs() {
+		return consumedCPUs;
+	}
+
+	public Long getExecutionTime() {
+		return remainingExecutionTime;
+	}
+
+	public void setConsumedDiskMemory(Integer size) {
+		this.consumedDiskMemory = size;
+	}
+
+	public void setConsumedMemory(Integer consumedMemory) {
+		this.consumedMemory = consumedMemory;
+	}
+
+	public void setConsumedCPUs(Integer consumedCPUs) {
+		this.consumedCPUs = consumedCPUs;
+	}
+
+	public void setRemainingExecutionTime(Long executionTime) {
+		this.remainingExecutionTime = executionTime;
+	}
+
+	public Long getLastStartTime() {
+		return lastStartTime;
+	}
+
+	public void setLastStartTime(Long lastStartTime) {
+		this.lastStartTime = lastStartTime;
+	}
 }

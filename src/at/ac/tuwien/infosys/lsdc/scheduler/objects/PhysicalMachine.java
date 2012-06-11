@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 
 
-public class PhysicalMachine extends Machine implements IResourceInformation{
+public class PhysicalMachine extends Machine implements IResourceInformation, Cloneable{
 	private Integer id = null;
 	private Integer CPUs = null;
 	private Integer memory = null;
@@ -110,5 +110,40 @@ public class PhysicalMachine extends Machine implements IResourceInformation{
 		return "PhysicalMachine [CPUs=" + CPUs + ", memory=" + memory
 				+ ", diskMemory=" + diskMemory + ", pricePerCycle="
 				+ pricePerCycle + "]";
+	}
+	
+	public void setUsedCPUs(Integer usedCPUs) {
+		this.usedCPUs = usedCPUs;
+	}
+
+	public void setUsedMemory(Integer usedMemory) {
+		this.usedMemory = usedMemory;
+	}
+
+	public void setUsedDiskMemory(Integer usedDiskMemory) {
+		this.usedDiskMemory = usedDiskMemory;
+	}
+	
+	public void setVirtualMachines(HashMap<Integer, VirtualMachine> virtualMachines) {
+		this.virtualMachines = virtualMachines;
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		PhysicalMachine clonedMachine = new PhysicalMachine();
+		clonedMachine.setId(id);
+		clonedMachine.setCPUs(CPUs);
+		clonedMachine.setDiskMemory(diskMemory);
+		clonedMachine.setMemory(memory);
+		clonedMachine.setPricePerCycle(pricePerCycle);
+		
+		clonedMachine.setUsedCPUs(new Integer(usedCPUs));
+		clonedMachine.setUsedDiskMemory(new Integer(usedDiskMemory));
+		clonedMachine.setUsedMemory(new Integer(usedMemory));
+		
+		clonedMachine.setVirtualMachines((HashMap<Integer, VirtualMachine>)virtualMachines.clone());		
+		return clonedMachine;
 	}	
+	
+	
 }

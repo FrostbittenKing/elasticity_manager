@@ -1,9 +1,11 @@
-package at.ac.tuwien.infosys.lsdc.scheduler;
+package at.ac.tuwien.infosys.lsdc.scheduler.monitor;
 
 import java.util.HashMap;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
+import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
+import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.exception.IllegalValueException;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;

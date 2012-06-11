@@ -2,17 +2,19 @@ package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 
-public class InsourcedJob extends Job{
+public class InsourcedJob extends Job implements Cloneable{
 	private IJobEventListener cloudListener;
 	private IJobEventListener monitorListener;
 	private VirtualMachine currentVirtualMachineEnvironment = null;
-	private Double migrationCosts;
+	
+	public InsourcedJob(){
+		super();
+	}
 	
 	public InsourcedJob(Integer size, Integer consumedMemory, Integer consumedCPUs,
 			Long executionTime) {
 		super(size, consumedMemory, consumedCPUs, executionTime);
 		this.remainingExecutionTime = executionTime;
-		this.migrationCosts = 0.0;
 	}
 
 	@Override
@@ -24,12 +26,10 @@ public class InsourcedJob extends Job{
 			}
 			catch (InterruptedException e) {
 				Long executedTime = System.currentTimeMillis() - lastStartTime;
-				calculateExecutionCosts(executedTime);
 				remainingExecutionTime -= executedTime;
 				return;
 			}
 		}
-		calculateExecutionCosts(System.currentTimeMillis() - lastStartTime);
 
 		if (cloudListener != null){
 			cloudListener.jobCompleted(this);
@@ -39,43 +39,6 @@ public class InsourcedJob extends Job{
 		}
 	}
 
-	@Override
-	protected void calculateExecutionCosts(Long executedTime) {
-		executionCosts += (executedTime / 1000) * currentVirtualMachineEnvironment.getHost().getPricePerCycle().doubleValue();
-	}
-
-	public Integer getConsumedDiskMemory() {
-		return consumedDiskMemory;
-	}
-
-	public Integer getConsumedMemory() {
-		return consumedMemory;
-	}
-
-	public Integer getConsumedCPUs() {
-		return consumedCPUs;
-	}
-
-	public Long getExecutionTime() {
-		return remainingExecutionTime;
-	}
-
-	public void setConsumedDiskMemory(Integer size) {
-		this.consumedDiskMemory = size;
-	}
-
-	public void setConsumedMemory(Integer consumedMemory) {
-		this.consumedMemory = consumedMemory;
-	}
-
-	public void setConsumedCPUs(Integer consumedCPUs) {
-		this.consumedCPUs = consumedCPUs;
-	}
-
-	public void setExecutionTime(Long executionTime) {
-		this.remainingExecutionTime = executionTime;
-	}
-
 	public void setCloudListener(IJobEventListener cloudListener) {
 		this.cloudListener = cloudListener;
 	}
@@ -83,19 +46,7 @@ public class InsourcedJob extends Job{
 	public void setMonitorListener(IJobEventListener monitorListener) {
 		this.monitorListener = monitorListener;
 	}
-
-	public void addCosts(Double costs){
-		this.migrationCosts += costs;
-	}
-
-	public Double getCosts() {
-		return migrationCosts;
-	}
-
-	public Double getExecutionCosts() {
-		return executionCosts;
-	}
-
+	
 	@Override
 	public String toString() {
 		return "Job [size=" + consumedDiskMemory + ", consumedMemory=" + consumedMemory
@@ -122,4 +73,20 @@ public class InsourcedJob extends Job{
 	public OutsourcedJob makeOutsourcedJob(){
 		return new OutsourcedJob(consumedDiskMemory, consumedMemory, consumedCPUs, remainingExecutionTime);
 	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		InsourcedJob clonedJob = new InsourcedJob();
+		
+		clonedJob.setConsumedCPUs(new Integer(consumedCPUs));
+		clonedJob.setConsumedDiskMemory(new Integer(consumedDiskMemory));
+		clonedJob.setConsumedMemory(new Integer(consumedMemory));
+		
+		clonedJob.setRemainingExecutionTime(remainingExecutionTime);
+		clonedJob.setLastStartTime(lastStartTime);	
+		
+		return super.clone();
+	}
+	
+	
 }
