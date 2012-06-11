@@ -48,9 +48,9 @@ public class Test {
 		load.divElement(all);
 		Matrix<Double> foo = MatrixHelper.calculateRowMean(load);
 		*/
-		cluster.startMachine();
-		cluster.startMachine();
-		cluster.startMachine();
+//		cluster.startMachine();
+//		cluster.startMachine();
+//		cluster.startMachine();
 		BestFit<PhysicalMachine> bestFit = new BestFit<PhysicalMachine>(cluster.getRunningMachines());
 		System.out.println(((PhysicalMachine)bestFit.getBestFittingMachine(job)).getId());
 		//Matrix<Double>z = MatrixHelper.calculateRowMean(x);

@@ -12,8 +12,11 @@ import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 
 public class JobScheduler {
 	public enum PolicyLevel {
-		GREEN(0.2, 0.5), GREEN_ORANGE(0.15, 0.6), ORANGE(0.1, 0.7), ORANGE_RED(
-				0.05, 0.8), RED(0.0, 0.9);
+		GREEN(0.2, 0.5), 
+		GREEN_ORANGE(0.15, 0.6), 
+		ORANGE(0.1, 0.7), 
+		ORANGE_RED(0.05, 0.8), 
+		RED(0.0, 0.9);
 
 		private PolicyLevel(Double overBudget, Double threshHold) {
 			this.overBudget = overBudget;
@@ -35,16 +38,14 @@ public class JobScheduler {
 	private static JobScheduler instance = null;
 
 	private CloudCluster cloudCluster = null;
-	private PolicyLevel currentPolicyLevel;
-	private IJobEventListener monitorListener;
+	private PolicyLevel currentPolicyLevel = null;
+	private IJobEventListener monitorListener = null;
 
 	private JobScheduler() {
-
 	}
 
 	public void initialize(HashMap<Integer, PhysicalMachine> physicalMachines) {
-		cloudCluster = LocalCloudClusterFactory.getInstance()
-				.createLocalCluster(physicalMachines);
+		cloudCluster = LocalCloudClusterFactory.getInstance().createLocalCluster(physicalMachines);
 	}
 
 	public synchronized void scheduleJob(Job job) {

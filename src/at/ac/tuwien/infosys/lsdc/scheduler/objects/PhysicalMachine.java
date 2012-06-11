@@ -17,8 +17,7 @@ public class PhysicalMachine extends Machine implements IResourceInformation{
 	private transient Integer usedMemory = 0;
 	private transient Integer usedDiskMemory = 0;
 	
-	private transient Boolean isRunning = false;
-	private transient HashMap<Integer,VirtualMachine> vms = new HashMap<Integer,VirtualMachine>();
+	private transient HashMap<Integer,VirtualMachine> virtualMachines = new HashMap<Integer,VirtualMachine>();
 	
 	private transient Integer currentMaxVMId = 0;
 	
@@ -28,10 +27,14 @@ public class PhysicalMachine extends Machine implements IResourceInformation{
 		usedDiskMemory += neededDiskMemory;
 		
 		VirtualMachine vm = new VirtualMachine(this,createVMId(),neededDiskMemory, neededMemory, neededCPUS);
-		vms.put(vm.getId(), vm);
+		virtualMachines.put(vm.getId(), vm);
 		return vm;
 	}
 	
+	public HashMap<Integer, VirtualMachine> getVirtualMachines() {
+		return virtualMachines;
+	}
+
 	private Integer createVMId() {
 		return ++currentMaxVMId;
 		
@@ -50,28 +53,28 @@ public class PhysicalMachine extends Machine implements IResourceInformation{
 
 		return pricePerCycle;
 	}
-	public Boolean isRunning() {
-		return isRunning;
-	}
+
+
 	public void setPricePerCycle(Integer pricePerCycle) {
 		this.pricePerCycle = pricePerCycle;
 	}
-	public void setIsRunning(Boolean isRunning) {
-		this.isRunning = isRunning;
-	}	
 	
 	public Integer getCPUs() {
 		return CPUs;
 	}
+	
 	public Integer getMemory() {
 		return memory;
 	}
+	
 	public Integer getDiskMemory() {
 		return diskMemory;
 	}
+	
 	public void setCPUs(Integer cPUs) {
 		CPUs = cPUs;
 	}
+	
 	public void setMemory(Integer memory) {
 		this.memory = memory;
 	}
@@ -89,7 +92,6 @@ public class PhysicalMachine extends Machine implements IResourceInformation{
 	public String toString() {
 		return "PhysicalMachine [CPUs=" + CPUs + ", memory=" + memory
 				+ ", diskMemory=" + diskMemory + ", pricePerCycle="
-				+ pricePerCycle + ", isRunning=" + isRunning + "]";
-	}
-	
+				+ pricePerCycle + "]";
+	}	
 }

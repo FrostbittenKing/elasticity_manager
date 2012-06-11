@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.bus.BusListenerClientException;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.exceptions.PhysicalMachineException;
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
@@ -27,7 +28,7 @@ public class CloudCluster implements IJobEventListener{
 	private Integer totalCPUs = 0;
 	private Integer totalDiskMemory = 0;
 	
-	private Integer currentCycleCosts = null;
+	private Integer currentCycleCosts = 0;
 	
 	public CloudCluster(HashMap<Integer,PhysicalMachine> physicalMachines) {
 		this.physicalMachines = physicalMachines;
@@ -60,13 +61,19 @@ public class CloudCluster implements IJobEventListener{
 		totalMemory - currentUsedMemory >= job.getConsumedMemory());
 	}
 
-	public Boolean startMachine() {
-		if (offlineMachines.isEmpty()) {
-			return false;
+	public void startMachineForJob(Job job) {
+		//TODO: start a machine
+	}
+	
+	public void stopMachine(PhysicalMachine pm) throws PhysicalMachineException{
+		if (!runningMachines.values().contains(pm)){
+			throw new PhysicalMachineException("Could not stop: Physical machine with id: " + pm.getId() + " is not running.");
 		}
-		Integer nextMachineKey = offlineMachines.keySet().iterator().next();
-		runningMachines.put(nextMachineKey,offlineMachines.remove(nextMachineKey));
-		return true;
+		if (pm.getVirtualMachines().size() != 0){
+			throw new PhysicalMachineException("Could not stop: Physical machine with id: " + pm.getId() + " has running virtual machines");
+		}
+		runningMachines.remove(pm.getId());
+		offlineMachines.put(pm.getId(), pm);
 	}
 
 	public PhysicalMachine getPhysicalMachine(Integer id) {
