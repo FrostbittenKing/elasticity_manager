@@ -20,6 +20,11 @@ public class SimulationParameters {
 	private Integer numberOfJobs = null;
 	private Integer jobSchedulingDelay = null;
 	
+	private Double jobMigrationCost = null;
+	private Double virtualMachineMigrationCost = null;
+	private Double physicalMachineBootCost = null;
+	private Double outSourceCostsPerCycle = null;
+	
 	public Integer getNumberOfJobs() {
 		return numberOfJobs;
 	}
@@ -108,5 +113,37 @@ public class SimulationParameters {
 
 	public void setPhysicalMachines(HashMap<Integer,PhysicalMachine> physicalMachines) {
 		this.physicalMachines = physicalMachines;
-	}	
+	}
+
+	public Double getJobMigrationCost() {
+		return jobMigrationCost;
+	}
+
+	public Double getVirtualMachineMigrationCost() {
+		return virtualMachineMigrationCost;
+	}
+
+	public Double getPhysicalMachineBootCost() {
+		return physicalMachineBootCost;
+	}
+
+	public void setJobMigrationCost(Double jobMigrationCost) {
+		this.jobMigrationCost = jobMigrationCost;
+	}
+
+	public void setVirtualMachineMigrationCost(Double virtualMachineMigrationCost) {
+		this.virtualMachineMigrationCost = virtualMachineMigrationCost;
+	}
+
+	public void setPhysicalMachineBootCost(Double physicalMachineBootCost) {
+		this.physicalMachineBootCost = physicalMachineBootCost;
+	}
+
+	public Double getOutSourceCostsPerCycle() {
+		return outSourceCostsPerCycle;
+	}
+
+	public void setOutSourceCostsPerCycle(Double outSourceCostsPerCycle) {
+		this.outSourceCostsPerCycle = outSourceCostsPerCycle;
+	}
 }

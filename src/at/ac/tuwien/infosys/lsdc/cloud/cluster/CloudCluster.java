@@ -9,6 +9,7 @@ import at.ac.tuwien.infosys.lsdc.cloud.cluster.exceptions.PhysicalMachineExcepti
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 
 public class CloudCluster implements IJobEventListener{

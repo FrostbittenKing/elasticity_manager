@@ -12,6 +12,7 @@ public class Job implements Runnable{
 //	private Integer priority = null;
 	private IJobEventListener cloudListener;
 	private IJobEventListener monitorListener;
+	private Double costs;
 	
 	//TODO:  implement priority
 	
@@ -22,6 +23,7 @@ public class Job implements Runnable{
 		this.consumedMemory = consumedMemory;
 		this.consumedCPUs = consumedCPUs;
 		this.executionTime = executionTime;
+		this.costs = 0.0;
 	}
 	
 	@Override
@@ -81,6 +83,14 @@ public class Job implements Runnable{
 
 	public void setMonitorListener(IJobEventListener monitorListener) {
 		this.monitorListener = monitorListener;
+	}
+	
+	public void addCosts(Double costs){
+		this.costs += costs;
+	}
+
+	public Double getCosts() {
+		return costs;
 	}
 
 	@Override

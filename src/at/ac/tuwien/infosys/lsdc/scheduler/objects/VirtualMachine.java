@@ -34,6 +34,7 @@ public class VirtualMachine extends Machine implements IResourceInformation{
 		currentUsedTotalCPUs += job.getConsumedCPUs();
 		currentUsedTotalDiskMemory += job.getConsumedDiskMemory();
 		currentUsedTotalMemory += job.getConsumedMemory();
+		job.addCosts(host.getPricePerCycle().doubleValue() * (job.getExecutionTime().doubleValue() / 1000));
 		new Thread(job).start();
 	}
 	
