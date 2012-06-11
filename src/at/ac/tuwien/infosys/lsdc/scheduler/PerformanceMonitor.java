@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
+import at.ac.tuwien.infosys.lsdc.scheduler.exception.IllegalValueException;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 
@@ -37,13 +38,48 @@ public class PerformanceMonitor implements IJobEventListener {
 
 	private void monitor() {
 		// Monitor the Resources of the relevant Cluster-Instance
+		// There are x things we want to do:
+		// * set a useful level (green - red - orange)
+		// : the objective function is minimized energy-costs, thus the level
+		// : should indicate how much % of overall energy we are consuming right
+		// : now
+		// * get the current usage of all the PMs and see if it can be optimized
+		// : i.e., if more than 1 PM is used, try to find a better
+		// : job/VM/PM-assignment
 
-		// i.e. update all the information
 		CloudCluster cluster = JobScheduler.getInstance().getCluster();
-		for (PhysicalMachine pm : cluster.getRunningMachines()) {
-			usagePerPM.put(pm.getId(), pm.getUsedResources());
+
+		setPolicyLevel(cluster);
+
+		if (cluster.getRunningMachines().length <= 1) {
+			// Nothing to optimize, isn't it?
+			return;
 		}
 
+	}
+
+	private void setPolicyLevel(CloudCluster cluster) {
+		Integer potEnergySum = 0;
+		Integer actEnergySum = 0;
+
+		for (PhysicalMachine pm : cluster.getOfflineMachines()) {
+			potEnergySum += pm.getPricePerCycle();
+		}
+
+		for (PhysicalMachine pm : cluster.getRunningMachines()) {
+			actEnergySum += pm.getPricePerCycle();
+		}
+
+		potEnergySum += actEnergySum;
+
+		Double usagePercent = (double) (actEnergySum / potEnergySum);
+
+		try {
+			JobScheduler.getInstance().setCurrentPolicyLevel(
+					JobScheduler.getAccordingPolicyLevel(usagePercent));
+		} catch (IllegalValueException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void analyze() {
