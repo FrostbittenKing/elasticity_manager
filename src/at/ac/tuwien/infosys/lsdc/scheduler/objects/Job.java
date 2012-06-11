@@ -26,6 +26,14 @@ public class Job implements Runnable{
 		this.costs = 0.0;
 	}
 	
+	public Job modifyCosts(Double multiplicator) {
+		return new Job(
+				new Double(Math.ceil(this.consumedDiskMemory * multiplicator)).intValue(), 
+				new Double(Math.ceil(this.consumedMemory * multiplicator)).intValue(), 
+				new Double(Math.ceil(this.consumedCPUs * multiplicator)).intValue(), executionTime);
+		
+	}
+	
 	@Override
 	public void run(){
 		try {

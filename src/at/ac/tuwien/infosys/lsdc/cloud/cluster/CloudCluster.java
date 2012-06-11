@@ -107,6 +107,11 @@ public class CloudCluster implements IJobEventListener{
 		//TODO: start a machine
 	}
 	
+	public PhysicalMachine startMachine(PhysicalMachine machine) {
+		runningMachines.put(machine.getId(), offlineMachines.remove(machine));
+		return machine;
+	}
+	
 	public void stopMachine(PhysicalMachine pm) throws PhysicalMachineException{
 		if (!runningMachines.values().contains(pm)){
 			throw new PhysicalMachineException("Could not stop: Physical machine with id: " + pm.getId() + " is not running.");
