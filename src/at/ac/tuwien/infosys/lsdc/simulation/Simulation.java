@@ -4,7 +4,7 @@ import java.util.Timer;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
-import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParameters;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParametersFactory;
 import at.ac.tuwien.infosys.lsdc.simulation.monitor.Monitor;
@@ -45,8 +45,8 @@ public class Simulation {
 		}
 	}
 
-	private static Job createJob(SimulationParameters parameters) {
-		return new Job(generateRandomInteger(parameters.getMinDiskSize(),
+	private static InsourcedJob createJob(SimulationParameters parameters) {
+		return new InsourcedJob(generateRandomInteger(parameters.getMinDiskSize(),
 				parameters.getMaxDiskSize()), generateRandomInteger(
 				parameters.getMinMemorySize(), parameters.getMaxMemorySize()),
 				generateRandomInteger(parameters.getMinCPUCount(),
@@ -62,7 +62,7 @@ public class Simulation {
 				+ (int) (Math.random() * ((upperBound - lowerBound) + 1));
 	}
 
-	private static Integer generateNormalDistributedInteger(Integer lowerBound, Integer upperBound){
-		return	RandomGaussNumber.newGaussianInt(lowerBound, upperBound);
+	private static Long generateNormalDistributedInteger(Integer lowerBound, Integer upperBound){
+		return	RandomGaussNumber.newGaussianLong(lowerBound, upperBound);
 	}
 }

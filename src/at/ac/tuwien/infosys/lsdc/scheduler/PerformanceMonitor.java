@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.exception.IllegalValueException;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
@@ -26,13 +27,13 @@ public class PerformanceMonitor implements IJobEventListener {
 	}
 
 	@Override
-	public void jobCompleted(Job job) {
+	public void jobCompleted(InsourcedJob job) {
 		monitor();
 
 	}
 
 	@Override
-	public void jobAdded(Job job) {
+	public void jobAdded(InsourcedJob job) {
 		monitor();
 	}
 

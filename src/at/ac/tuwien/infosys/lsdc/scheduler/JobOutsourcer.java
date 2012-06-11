@@ -1,8 +1,8 @@
 package at.ac.tuwien.infosys.lsdc.scheduler;
 
-import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.OutsourcedJob;
 
-public class JobOutsourcer {
+public class JobOutsourcer implements IOutsourcedJobCompletionListener{
 	private static JobOutsourcer instance = null;
 	private Double outSourceCostsPerCycle = null;
 	
@@ -10,8 +10,9 @@ public class JobOutsourcer {
 		
 	}
 	
-	public void outSourceJob(Job job){
-		
+	public void outSourceJob(OutsourcedJob job){
+		job.setListener(this);
+		new Thread(job).start();
 	}
 	
 	public void setOutsourceCosts(Double costs){
@@ -23,5 +24,11 @@ public class JobOutsourcer {
 			instance = new JobOutsourcer();
 		}
 		return instance;
+	}
+
+	@Override
+	public void jobCompleted(OutsourcedJob job) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -4,7 +4,7 @@ import at.ac.tuwien.infosys.lsdc.scheduler.matrix.Matrix;
 import at.ac.tuwien.infosys.lsdc.scheduler.matrix.twoDimensional.MatrixHelper;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
-import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Machine;
 
 
@@ -29,7 +29,7 @@ public class BestFit<T extends IResourceInformation> {
 	 * @param job the job to be scheduled in a machine
 	 * @return the id of the machine
 	 */
-	public Machine getBestFittingMachine(Job job) {
+	public Machine getBestFittingMachine(InsourcedJob job) {
 		
 		int nrOfMachines = machines.length;
 		Resource [] currentUsedResources = new Resource[nrOfMachines];

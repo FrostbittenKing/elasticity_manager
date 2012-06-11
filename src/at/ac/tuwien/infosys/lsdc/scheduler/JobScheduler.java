@@ -7,7 +7,7 @@ import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.exception.IllegalValueException;
 import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
-import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
@@ -62,7 +62,7 @@ public class JobScheduler {
 		currentPolicyLevel = PolicyLevel.GREEN;
 	}
 
-	public synchronized void scheduleJob(Job job) {
+	public synchronized void scheduleJob(InsourcedJob job) {
 		System.out.println("Scheduled job: " + job + " , WOOHOO!");
 
 		if (cloudCluster.jobFits(job)) {
@@ -80,7 +80,7 @@ public class JobScheduler {
 						 */
 					} else {
 						// create modifed job template to start a physical machine taking the policy level into account
-						Job policyAwareJobCosts = job.modifyCosts(currentPolicyLevel.getOverBudget());
+						InsourcedJob policyAwareJobCosts = job.modifyCosts(currentPolicyLevel.getOverBudget());
 						// start the matching physical machine, and create a policylevel-aware VM machine
 						// return the VM
 						VirtualMachine startedVM = cloudCluster.startMachine(stoppedPhysicalMachine).startVirtualMachine(
@@ -93,7 +93,7 @@ public class JobScheduler {
 						monitorListener.jobAdded(job);
 					}
 				} else {
-					Job policyAwareJobCosts = job.modifyCosts(currentPolicyLevel.getOverBudget());
+					InsourcedJob policyAwareJobCosts = job.modifyCosts(currentPolicyLevel.getOverBudget());
 					VirtualMachine startedMachine = runningPhysicalMachine.startVirtualMachine(
 							policyAwareJobCosts.getConsumedDiskMemory(),
 							policyAwareJobCosts.getConsumedMemory(),
@@ -111,9 +111,9 @@ public class JobScheduler {
 		}
 	}
 
-	private VirtualMachine findVirtualMachine(Job job) {
+	private VirtualMachine findVirtualMachine(InsourcedJob job) {
 
-		Job policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
+		InsourcedJob policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
 		VirtualMachine[] candidates = cloudCluster.getVirtualHostingCandidates(policyAwareJobRequirements);
 		if (candidates.length == 0) {
 			return null;
@@ -122,8 +122,8 @@ public class JobScheduler {
 		return (VirtualMachine)bestFits.getBestFittingMachine(policyAwareJobRequirements);
 	}
 
-	private PhysicalMachine findRunningPhysicalMachine(Job job) {
-		Job policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
+	private PhysicalMachine findRunningPhysicalMachine(InsourcedJob job) {
+		InsourcedJob policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
 		PhysicalMachine[] candidates = cloudCluster.getRunningHostingCandidates(policyAwareJobRequirements);
 
 		if (candidates.length == 0) {
@@ -134,9 +134,10 @@ public class JobScheduler {
 		return (PhysicalMachine)bestFits.getBestFittingMachine(policyAwareJobRequirements);
 	}
 
-	private PhysicalMachine findStoppedPhysicalMachine(Job job) {
-		Job policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
+	private PhysicalMachine findStoppedPhysicalMachine(InsourcedJob job) {
+		InsourcedJob policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
 		PhysicalMachine[] candidates = cloudCluster.getStoppedHostingCandidates(policyAwareJobRequirements);
+
 		if (candidates.length == 0) {
 			return null;
 		}

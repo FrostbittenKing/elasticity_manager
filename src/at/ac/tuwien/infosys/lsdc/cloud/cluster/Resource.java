@@ -1,6 +1,6 @@
 package at.ac.tuwien.infosys.lsdc.cloud.cluster;
 
-import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 
 public class Resource {
 	private Integer[] resources;
@@ -20,7 +20,7 @@ public class Resource {
 		return id;
 	}
 	
-	public void addJob(Job job) {
+	public void addJob(InsourcedJob job) {
 		resources[ResourceType.CPU()] += job.getConsumedCPUs();
 		resources[ResourceType.MEMORY()] += job.getConsumedMemory();
 		resources[ResourceType.DISKMEMORY()] += job.getConsumedDiskMemory();
