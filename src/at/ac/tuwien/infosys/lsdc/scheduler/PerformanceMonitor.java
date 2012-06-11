@@ -3,6 +3,7 @@ package at.ac.tuwien.infosys.lsdc.scheduler;
 import java.util.HashMap;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 
@@ -10,7 +11,7 @@ public class PerformanceMonitor implements IJobEventListener {
 
 	private static PerformanceMonitor instance;
 
-	private HashMap<Double, Double> usagePerPM;
+	private HashMap<Integer, Resource> usagePerPM = new HashMap<Integer, Resource>();
 
 	private PerformanceMonitor() {
 
@@ -40,7 +41,7 @@ public class PerformanceMonitor implements IJobEventListener {
 		// i.e. update all the information
 		CloudCluster cluster = JobScheduler.getInstance().getCluster();
 		for (PhysicalMachine pm : cluster.getRunningMachines()) {
-
+			usagePerPM.put(pm.getId(), pm.getUsedResources());
 		}
 
 	}
