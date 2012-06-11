@@ -21,8 +21,8 @@ public class RandomGaussNumber {
 		return nextGaussian(min, max);
 	}
 
-	public static int newGaussianInt(int min, int max) {
-		return Math.round((float)nextGaussian(min, max));
+	public static long newGaussianLong(int min, int max) {
+		return (long)Math.round((float)nextGaussian(min, max));
 	}
 
 	private static double nextGaussian(int min, int max){

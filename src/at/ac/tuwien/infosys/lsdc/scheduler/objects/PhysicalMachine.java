@@ -83,13 +83,13 @@ public class PhysicalMachine extends Machine implements IResourceInformation{
 		this.diskMemory = diskMemory;
 	}
 	
-	public boolean canHostJob(Job job) {
+	public boolean canHostJob(InsourcedJob job) {
 		return job.getConsumedCPUs() <= (CPUs - usedCPUs) && 
 				job.getConsumedMemory() <= (memory - usedMemory) &&
 				job.getConsumedDiskMemory() <= (diskMemory - usedDiskMemory);
 	}
 	
-	public ArrayList<VirtualMachine> getVirtualHostingCandidates(Job job) {
+	public ArrayList<VirtualMachine> getVirtualHostingCandidates(InsourcedJob job) {
 		ArrayList<VirtualMachine> candidates = new ArrayList<VirtualMachine>();
 		for (VirtualMachine currentCandidate : virtualMachines.values()) {
 			if (currentCandidate.canHostJob(job)) {

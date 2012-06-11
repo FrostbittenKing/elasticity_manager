@@ -8,7 +8,7 @@ import java.util.Set;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.bus.BusListenerClientException;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.exceptions.PhysicalMachineException;
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
-import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
@@ -57,7 +57,7 @@ public class CloudCluster implements IJobEventListener{
 		return (Integer []) physicalMachines.keySet().toArray();
 	}
 
-	public Boolean jobFits(Job job) {
+	public Boolean jobFits(InsourcedJob job) {
 		return (totalCPUs - currentUsedCPUs >= job.getConsumedCPUs() &&
 		totalDiskMemory - currentUsedDiskMemory >= job.getConsumedDiskMemory() &&
 		totalMemory - currentUsedMemory >= job.getConsumedMemory());
@@ -70,17 +70,17 @@ public class CloudCluster implements IJobEventListener{
 	 * by a best fit heuristic.
 	 * the set of candidates can also be zero
 	 */
-	public PhysicalMachine[] getRunningHostingCandidates(Job job) {
+	public PhysicalMachine[] getRunningHostingCandidates(InsourcedJob job) {
 		ArrayList<PhysicalMachine> candidates = getHostingCandidates(job,runningMachines.values());
 		return candidates.toArray(new PhysicalMachine[candidates.size()]);
 	}
 	
-	public PhysicalMachine[] getStoppedHostingCandidates(Job job) {
+	public PhysicalMachine[] getStoppedHostingCandidates(InsourcedJob job) {
 		ArrayList<PhysicalMachine> candidates = getHostingCandidates(job, offlineMachines.values());
 		return candidates.toArray(new PhysicalMachine[candidates.size()]);
 	}
 	
-	public VirtualMachine[] getVirtualHostingCandidates(Job job) {
+	public VirtualMachine[] getVirtualHostingCandidates(InsourcedJob job) {
 		ArrayList<VirtualMachine> allCandidates = new ArrayList<VirtualMachine>();
 		for (PhysicalMachine currentMachine : runningMachines.values()) {
 			ArrayList<VirtualMachine> machineHostingCandidates = currentMachine.getVirtualHostingCandidates(job);
@@ -91,7 +91,7 @@ public class CloudCluster implements IJobEventListener{
 		return allCandidates.toArray(new VirtualMachine[allCandidates.size()]);
 	}
 
-	private ArrayList<PhysicalMachine> getHostingCandidates(Job job,Collection<PhysicalMachine> machines) {
+	private ArrayList<PhysicalMachine> getHostingCandidates(InsourcedJob job,Collection<PhysicalMachine> machines) {
 		ArrayList<PhysicalMachine> candidates = new ArrayList<PhysicalMachine>();
 		
 		for (PhysicalMachine currentMachine : machines) {
@@ -103,7 +103,7 @@ public class CloudCluster implements IJobEventListener{
 	}
 	
 
-	public void startMachineForJob(Job job) {
+	public void startMachineForJob(InsourcedJob job) {
 		//TODO: start a machine
 	}
 	
@@ -136,14 +136,14 @@ public class CloudCluster implements IJobEventListener{
 	}
 
 	@Override
-	public void jobAdded(Job job) {
+	public void jobAdded(InsourcedJob job) {
 		currentUsedCPUs += job.getConsumedCPUs();
 		currentUsedDiskMemory += job.getConsumedDiskMemory();
 		currentUsedMemory += job.getConsumedMemory();		
 	}	
 	
 	@Override
-	public void jobCompleted(Job job) {
+	public void jobCompleted(InsourcedJob job) {
 		currentUsedCPUs -= job.getConsumedCPUs();
 		currentUsedDiskMemory -= job.getConsumedDiskMemory();
 		currentUsedMemory -= job.getConsumedMemory();

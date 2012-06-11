@@ -6,7 +6,7 @@ import java.util.HashMap;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
-import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
@@ -59,7 +59,7 @@ public class JobScheduler {
 		currentPolicyLevel = PolicyLevel.GREEN;
 	}
 
-	public synchronized void scheduleJob(Job job) {
+	public synchronized void scheduleJob(InsourcedJob job) {
 		System.out.println("Scheduled job: " + job + " , WOOHOO!");
 
 		if (cloudCluster.jobFits(job)) {
@@ -116,7 +116,7 @@ public class JobScheduler {
 		 */
 	}
 
-	private VirtualMachine findVirtualMachine(Job job) {
+	private VirtualMachine findVirtualMachine(InsourcedJob job) {
 		VirtualMachine[] candidates = cloudCluster.getVirtualHostingCandidates(job);
 		if (candidates.length == 0) {
 			return null;
@@ -125,7 +125,7 @@ public class JobScheduler {
 		return (VirtualMachine)bestFits.getBestFittingMachine(job);
 	}
 
-	private PhysicalMachine findRunningPhysicalMachine(Job job) {
+	private PhysicalMachine findRunningPhysicalMachine(InsourcedJob job) {
 		PhysicalMachine[] candidates = cloudCluster.getRunningHostingCandidates(job);
 		if (candidates.length == 0) {
 			return null;
@@ -135,7 +135,7 @@ public class JobScheduler {
 		return (PhysicalMachine)bestFits.getBestFittingMachine(job);
 	}
 
-	private PhysicalMachine findStoppedPhysicalMachine(Job job) {
+	private PhysicalMachine findStoppedPhysicalMachine(InsourcedJob job) {
 		PhysicalMachine[] candidates = cloudCluster.getStoppedHostingCandidates(job);
 		if (candidates.length == 0) {
 			return null;
