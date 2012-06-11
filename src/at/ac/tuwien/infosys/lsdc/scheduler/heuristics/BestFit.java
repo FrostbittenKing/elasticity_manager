@@ -5,6 +5,7 @@ import at.ac.tuwien.infosys.lsdc.scheduler.matrix.twoDimensional.MatrixHelper;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.Machine;
 
 
 public class BestFit<T extends IResourceInformation> {
@@ -27,7 +28,7 @@ public class BestFit<T extends IResourceInformation> {
 	 * @param job the job to be scheduled in a machine
 	 * @return the id of the machine
 	 */
-	public Integer getBestFittingMachine(Job job) {
+	public Machine getBestFittingMachine(Job job) {
 		
 		//TODO
 		// some checks if the machine has enough available resources to host the job
@@ -57,8 +58,10 @@ public class BestFit<T extends IResourceInformation> {
 		loadMatrix.divElement(allAvailable);
 		Matrix<Double> rowMeans = MatrixHelper.calculateRowMean(loadMatrix);
 	
-		if (nrOfMachines == 1)
-			return totalResources[0].getId();
+		if (nrOfMachines == 1) {
+			return (Machine)machines[0];
+			//return totalResources[0].getId();
+		}
 		
 		//Integer currentBestMachine = totalResources[0].getId();
 		Integer currentBestMachinePosition = 0;
@@ -73,6 +76,7 @@ public class BestFit<T extends IResourceInformation> {
 			}
 		}
 		
-		return totalResources[currentBestMachinePosition].getId();
+		return (Machine)machines[currentBestMachinePosition];
+		//return totalResources[currentBestMachinePosition].getId();
 	}
 }

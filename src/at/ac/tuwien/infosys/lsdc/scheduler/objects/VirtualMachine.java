@@ -6,7 +6,7 @@ import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 
-public class VirtualMachine implements IResourceInformation{
+public class VirtualMachine extends Machine implements IResourceInformation{
 	private Integer totalAvailableMemory = null;
 	private Integer totalAvailableCPUs = null;
 	private Integer totalAvailableDiskMemory = null;
@@ -15,15 +15,18 @@ public class VirtualMachine implements IResourceInformation{
 	private Integer currentUsedTotalCPUs = 0;
 	private Integer currentUsedTotalDiskMemory = 0;
 	
+	private transient PhysicalMachine host = null;
+	
 	private Vector<Job> runningJobs = new Vector<Job>();
 	
 	private transient Integer id = 0;
 
-	public VirtualMachine(Integer id, Integer diskSize, Integer memorySize, Integer numCPUs){
+	public VirtualMachine(PhysicalMachine host, Integer id, Integer diskSize, Integer memorySize, Integer numCPUs){
 		this.totalAvailableCPUs = numCPUs;
 		this.totalAvailableDiskMemory = diskSize;
 		this.totalAvailableMemory = memorySize;
 		this.id = id;
+		this.host = host;
 	}
 	
 	public synchronized void addJob(Job job){

@@ -52,7 +52,7 @@ public class Test {
 		cluster.startMachine();
 		cluster.startMachine();
 		BestFit<PhysicalMachine> bestFit = new BestFit<PhysicalMachine>(cluster.getRunningMachines());
-		System.out.println(bestFit.getBestFittingMachine(job));
+		System.out.println(((PhysicalMachine)bestFit.getBestFittingMachine(job)).getId());
 		//Matrix<Double>z = MatrixHelper.calculateRowMean(x);
 	}
 	
