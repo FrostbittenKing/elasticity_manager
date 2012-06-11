@@ -54,14 +54,11 @@ public class PerformanceMonitor implements IJobEventListener {
 
 		setPolicyLevel(cluster);
 
-		if (cluster.getRunningMachines().length <= 1) {
-			// Nothing to optimize, isn't it?
-			// maybe we event wan't to optimize the assignments of a single
-			// machine, to avoid starting a new one first-hand?
-			return;
-		}
-
 		// Gather all the necessary information
+		usagePerPM.clear();
+		for (PhysicalMachine pm : cluster.getRunningMachines()) {
+			usagePerPM.put(pm.getId(), pm.getUsedResources());
+		}
 
 		analyze();
 
