@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
+import at.ac.tuwien.infosys.lsdc.scheduler.exception.IllegalValueException;
 import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
@@ -18,6 +19,7 @@ public class JobScheduler {
 		ORANGE(1.1, 0.7), 
 		ORANGE_RED(1.05, 0.8), 
 		RED(1.0, 0.9);
+
 
 		private PolicyLevel(Double overBudget, Double threshHold) {
 			this.overBudget = overBudget;
@@ -45,13 +47,14 @@ public class JobScheduler {
 	private Double virtualMachineMigrationCost;
 	private Double physicalMachineBootCost;
 
-
 	private JobScheduler() {
 	}
 
-	public void initialize(HashMap<Integer, PhysicalMachine> physicalMachines, Double jobMigrationCost, 
-			Double virtualMachineMigrationCost, Double physicalMachineBootCost, Double outsourceCosts) {
-		this.cloudCluster = LocalCloudClusterFactory.getInstance().createLocalCluster(physicalMachines);
+	public void initialize(HashMap<Integer, PhysicalMachine> physicalMachines,
+			Double jobMigrationCost, Double virtualMachineMigrationCost,
+			Double physicalMachineBootCost, Double outsourceCosts) {
+		this.cloudCluster = LocalCloudClusterFactory.getInstance()
+				.createLocalCluster(physicalMachines);
 		this.jobMigrationCost = jobMigrationCost;
 		this.virtualMachineMigrationCost = virtualMachineMigrationCost;
 		this.physicalMachineBootCost = physicalMachineBootCost;
@@ -76,7 +79,6 @@ public class JobScheduler {
 						 * queue job
 						 */
 					} else {
-
 						// create modifed job template to start a physical machine taking the policy level into account
 						Job policyAwareJobCosts = job.modifyCosts(currentPolicyLevel.getOverBudget());
 						// start the matching physical machine, and create a policylevel-aware VM machine
@@ -87,7 +89,6 @@ public class JobScheduler {
 								policyAwareJobCosts.getConsumedCPUs());
 						//add the job to the vm
 						startedVM.addJob(job);
-
 						cloudCluster.jobAdded(job);
 						monitorListener.jobAdded(job);
 					}
@@ -111,6 +112,7 @@ public class JobScheduler {
 	}
 
 	private VirtualMachine findVirtualMachine(Job job) {
+
 		Job policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
 		VirtualMachine[] candidates = cloudCluster.getVirtualHostingCandidates(policyAwareJobRequirements);
 		if (candidates.length == 0) {
@@ -123,6 +125,7 @@ public class JobScheduler {
 	private PhysicalMachine findRunningPhysicalMachine(Job job) {
 		Job policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
 		PhysicalMachine[] candidates = cloudCluster.getRunningHostingCandidates(policyAwareJobRequirements);
+
 		if (candidates.length == 0) {
 			return null;
 		}
@@ -139,6 +142,7 @@ public class JobScheduler {
 		}
 		BestFit<PhysicalMachine> bestFits = new BestFit<PhysicalMachine>(candidates);
 		return (PhysicalMachine)bestFits.getBestFittingMachine(policyAwareJobRequirements);
+
 	}
 
 	public static JobScheduler getInstance() {
@@ -158,6 +162,33 @@ public class JobScheduler {
 
 	public PolicyLevel getCurrentPolicyLevel() {
 		return currentPolicyLevel;
+	}
+
+	public void setCurrentPolicyLevel(PolicyLevel currentPolicyLevel) {
+		this.currentPolicyLevel = currentPolicyLevel;
+	}
+
+	public static PolicyLevel getAccordingPolicyLevel(Double percent)
+			throws IllegalValueException {
+		if (percent > 1.0 || percent < 0.0) {
+			throw new IllegalValueException("Value must be below 1.0");
+		}
+
+		if (percent <= PolicyLevel.GREEN.getThreshold())
+			return PolicyLevel.GREEN;
+		else if (percent > PolicyLevel.RED.getThreshold())
+			return PolicyLevel.RED;
+
+		PolicyLevel result = PolicyLevel.GREEN;
+
+		for (PolicyLevel candidate : PolicyLevel.values()) {
+			if (percent <= candidate.getThreshold()) {
+				result = candidate;
+				break;
+			}
+		}
+
+		return result;
 	}
 
 	public Double getJobMigrationCost() {
