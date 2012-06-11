@@ -27,7 +27,11 @@ public class Simulation {
 		try {
 			parameters = SimulationParametersFactory.getInstance().createParameters(SIMULATION_PROPERTIES_FILENAME);
 
-			JobScheduler.getInstance().initialize(parameters.getPhysicalMachines());
+			JobScheduler.getInstance().initialize(parameters.getPhysicalMachines(), 
+					parameters.getJobMigrationCost(), 
+					parameters.getVirtualMachineMigrationCost(), 
+					parameters.getPhysicalMachineBootCost(),
+					parameters.getOutSourceCostsPerCycle());
 			
 			monitor = new Monitor(MONITOR_OUTPUT_FILENAME);
 			timer.scheduleAtFixedRate(monitor, 0, MONITOR_POLLING_INTERVAL);

@@ -41,18 +41,30 @@ public class JobScheduler {
 	private CloudCluster cloudCluster = null;
 	private PolicyLevel currentPolicyLevel = null;
 	private IJobEventListener monitorListener = null;
+	private Double jobMigrationCost;
+	private Double virtualMachineMigrationCost;
+	private Double physicalMachineBootCost;
+	
 
 	private JobScheduler() {
 	}
 
-	public void initialize(HashMap<Integer, PhysicalMachine> physicalMachines) {
-		cloudCluster = LocalCloudClusterFactory.getInstance().createLocalCluster(physicalMachines);
+	public void initialize(HashMap<Integer, PhysicalMachine> physicalMachines, Double jobMigrationCost, 
+			Double virtualMachineMigrationCost, Double physicalMachineBootCost, Double outsourceCosts) {
+		this.cloudCluster = LocalCloudClusterFactory.getInstance().createLocalCluster(physicalMachines);
+		this.jobMigrationCost = jobMigrationCost;
+		this.virtualMachineMigrationCost = virtualMachineMigrationCost;
+		this.physicalMachineBootCost = physicalMachineBootCost;
+		JobOutsourcer.getInstance().setOutsourceCosts(outsourceCosts);
+		currentPolicyLevel = PolicyLevel.GREEN;
 	}
 
 	public synchronized void scheduleJob(Job job) {
 		System.out.println("Scheduled job: " + job + " , WOOHOO!");
 
 		if (cloudCluster.jobFits(job)) {
+			job.setMonitorListener(monitorListener);
+			job.setCloudListener(cloudCluster);
 			VirtualMachine virtualMachine = findVirtualMachine(job);
 			if (virtualMachine == null) {
 				PhysicalMachine runningPhysicalMachine = findRunningPhysicalMachine(job);
@@ -70,8 +82,7 @@ public class JobScheduler {
 						 * virtual machine --- add job new virtual machine
 						 */
 
-						job.setMonitorListener(monitorListener);
-						job.setCloudListener(cloudCluster);
+						
 						cloudCluster.jobAdded(job);
 						monitorListener.jobAdded(job);
 
@@ -83,9 +94,6 @@ public class JobScheduler {
 					 * new virtual machine --- add job to running virtual
 					 * machine
 					 */
-
-					job.setMonitorListener(monitorListener);
-					job.setCloudListener(cloudCluster);
 					cloudCluster.jobAdded(job);
 					monitorListener.jobAdded(job);
 				}
@@ -151,4 +159,19 @@ public class JobScheduler {
 		return this.cloudCluster;
 	}
 
+	public PolicyLevel getCurrentPolicyLevel() {
+		return currentPolicyLevel;
+	}
+
+	public Double getJobMigrationCost() {
+		return jobMigrationCost;
+	}
+
+	public Double getVirtualMachineMigrationCost() {
+		return virtualMachineMigrationCost;
+	}
+
+	public Double getPhysicalMachineBootCost() {
+		return physicalMachineBootCost;
+	}
 }

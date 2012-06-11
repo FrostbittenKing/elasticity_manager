@@ -9,6 +9,10 @@
 "maxExecutionTime":"60000",
 "numberOfJobs":"20",
 "jobSchedulingDelay":"1000",
+"jobMigrationCosts":"10.0",
+"virtualMachineMigrationCosts":"25.0",
+"physicalMachineBootCost":"50.0",
+"outSourceCostsPerCycle":"500",
 "physicalMachines":
 	[
 		{"CPUs":8, "memory":10000, "diskMemory":100000, "pricePerCycle":80},

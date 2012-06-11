@@ -54,5 +54,17 @@ public class PerformanceMonitor implements IJobEventListener {
 
 	private void execute() {
 		// Try to execute the the plan
+		
+		/*
+		 * TODO: things to consider when migrating a job from one virtualmachine to another:
+		 * 		- Job.addCosts(JobScheduler.getInstance().getJobMigrationCost()) needs to be called
+		 * 		- the virtual machine that the job was taken from needs to be checked if it has any other jobs
+		 * 			- if not, the virtual machine needs to be shut down, furthermore, the physical machine that ran the virtual machine needs to be checked if it runs any other virtual machines
+		 * 				- if not, the physicalmachine needs to be shut down
+		 * 		things to consider when migrating a virtualmachine from one physicalmachine to another:
+		 * 		- Job.addCosts(JobScheduler.getInstance().getVirtualMachineMigrationCost()) needs to be called
+		 * 		- the physical machine that ran the virtual machine needs to be checked if it runs any other virtual machines
+		 * 			- if not, the physicalmachine needs to be shut down
+		 */
 	}
 }

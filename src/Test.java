@@ -25,7 +25,7 @@ public class Test {
 		LocalCloudClusterFactory cloudClusterFactory = LocalCloudClusterFactory.getInstance();
 		CloudCluster cluster = cloudClusterFactory.createLocalCluster(parameters.getPhysicalMachines());
 
-		JobScheduler.getInstance().initialize(parameters.getPhysicalMachines());
+	//	JobScheduler.getInstance().initialize(parameters.getPhysicalMachines());
 		Job job = createJob(parameters);
 		/*
 		PhysicalMachine machine = cluster.getPhysicalMachine(1);
