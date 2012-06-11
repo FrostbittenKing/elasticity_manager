@@ -1,5 +1,6 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
@@ -80,6 +81,22 @@ public class PhysicalMachine extends Machine implements IResourceInformation{
 	}
 	public void setDiskMemory(Integer diskMemory) {
 		this.diskMemory = diskMemory;
+	}
+	
+	public boolean canHostJob(Job job) {
+		return job.getConsumedCPUs() <= (CPUs - usedCPUs) && 
+				job.getConsumedMemory() <= (memory - usedMemory) &&
+				job.getConsumedDiskMemory() <= (diskMemory - usedDiskMemory);
+	}
+	
+	public ArrayList<VirtualMachine> getVirtualHostingCandidates(Job job) {
+		ArrayList<VirtualMachine> candidates = new ArrayList<VirtualMachine>();
+		for (VirtualMachine currentCandidate : virtualMachines.values()) {
+			if (currentCandidate.canHostJob(job)) {
+				candidates.add(currentCandidate);
+			}
+		}
+		return candidates;
 	}
 	
 	public Integer getId() {

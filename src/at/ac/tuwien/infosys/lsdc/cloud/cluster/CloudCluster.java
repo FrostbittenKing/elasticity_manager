@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.lsdc.cloud.cluster;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import at.ac.tuwien.infosys.lsdc.cloud.cluster.exceptions.PhysicalMachineExcepti
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 
 public class CloudCluster implements IJobEventListener{
@@ -60,6 +62,46 @@ public class CloudCluster implements IJobEventListener{
 		totalDiskMemory - currentUsedDiskMemory >= job.getConsumedDiskMemory() &&
 		totalMemory - currentUsedMemory >= job.getConsumedMemory());
 	}
+	
+	/**
+	 * determines all possible candidates to host a job passed by the argument job
+	 * @param job the job to be hosted
+	 * @returns an array of candidates to host a job, the best candidate will be determined
+	 * by a best fit heuristic.
+	 * the set of candidates can also be zero
+	 */
+	public PhysicalMachine[] getRunningHostingCandidates(Job job) {
+		ArrayList<PhysicalMachine> candidates = getHostingCandidates(job,runningMachines.values());
+		return candidates.toArray(new PhysicalMachine[candidates.size()]);
+	}
+	
+	public PhysicalMachine[] getStoppedHostingCandidates(Job job) {
+		ArrayList<PhysicalMachine> candidates = getHostingCandidates(job, offlineMachines.values());
+		return candidates.toArray(new PhysicalMachine[candidates.size()]);
+	}
+	
+	public VirtualMachine[] getVirtualHostingCandidates(Job job) {
+		ArrayList<VirtualMachine> allCandidates = new ArrayList<VirtualMachine>();
+		for (PhysicalMachine currentMachine : runningMachines.values()) {
+			ArrayList<VirtualMachine> machineHostingCandidates = currentMachine.getVirtualHostingCandidates(job);
+			if (machineHostingCandidates.size() > 0) {
+				allCandidates.addAll(machineHostingCandidates);
+			}
+		}
+		return allCandidates.toArray(new VirtualMachine[allCandidates.size()]);
+	}
+
+	private ArrayList<PhysicalMachine> getHostingCandidates(Job job,Collection<PhysicalMachine> machines) {
+		ArrayList<PhysicalMachine> candidates = new ArrayList<PhysicalMachine>();
+		
+		for (PhysicalMachine currentMachine : machines) {
+			if(currentMachine.canHostJob(job)) {
+				candidates.add(currentMachine);
+			}
+		}
+		return candidates;
+	}
+	
 
 	public void startMachineForJob(Job job) {
 		//TODO: start a machine

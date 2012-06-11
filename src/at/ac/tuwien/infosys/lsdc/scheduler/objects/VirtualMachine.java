@@ -67,6 +67,12 @@ public class VirtualMachine extends Machine implements IResourceInformation{
 	public Integer getCurrentUsedTotalDiskMemory() {
 		return currentUsedTotalDiskMemory;
 	}
+	
+	public boolean canHostJob(Job job) {
+		return job.getConsumedCPUs() <= (totalAvailableCPUs - currentUsedTotalCPUs) && 
+				job.getConsumedMemory() <= (totalAvailableMemory - currentUsedTotalMemory) &&
+				job.getConsumedDiskMemory() <= (totalAvailableDiskMemory - currentUsedTotalDiskMemory);
+	}
 
 	public Integer getId() {
 		return id;

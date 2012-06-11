@@ -25,17 +25,11 @@ public class BestFit<T extends IResourceInformation> {
 	/**
 	 * Calculates the machine, in which the job passed by the argument job
 	 * fits in best
+	 * Expects that all passed machines have enough free resources to host the job (prefiltering necessary)
 	 * @param job the job to be scheduled in a machine
 	 * @return the id of the machine
 	 */
 	public Machine getBestFittingMachine(Job job) {
-		
-		//TODO
-		// some checks if the machine has enough available resources to host the job
-		// if not, exclude the machine from further calculations
-		// also return null or something if no machine can host the job
-		// still to be determined if this check is necessary, or if getBestFittingMachine
-		// always returns a solution (guaranteed that a machine that can host the job exists??)
 		
 		int nrOfMachines = machines.length;
 		Resource [] currentUsedResources = new Resource[nrOfMachines];

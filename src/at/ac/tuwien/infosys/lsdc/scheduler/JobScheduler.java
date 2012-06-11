@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
+import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Job;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
@@ -90,6 +91,7 @@ public class JobScheduler {
 				}
 			} else {
 				// TODO: simply add job to virtual machine
+				virtualMachine.addJob(job);
 			}
 
 		} else {
@@ -107,27 +109,31 @@ public class JobScheduler {
 	}
 
 	private VirtualMachine findVirtualMachine(Job job) {
-		/*
-		 * TODO: this method needs to find the BEST FITTING virtual machine for
-		 * the job
-		 */
-		return null;
+		VirtualMachine[] candidates = cloudCluster.getVirtualHostingCandidates(job);
+		if (candidates.length == 0) {
+			return null;
+		}
+		BestFit<VirtualMachine> bestFits = new BestFit<VirtualMachine>(candidates);
+		return (VirtualMachine)bestFits.getBestFittingMachine(job);
 	}
 
 	private PhysicalMachine findRunningPhysicalMachine(Job job) {
-		// TODO:
-		// TODO: this method needs to find the BEST FITTING running physical
-		// machine for the job
-		return null;
+		PhysicalMachine[] candidates = cloudCluster.getRunningHostingCandidates(job);
+		if (candidates.length == 0) {
+			return null;
+		}
+		
+		BestFit<PhysicalMachine> bestFits = new BestFit<PhysicalMachine>(candidates);
+		return (PhysicalMachine)bestFits.getBestFittingMachine(job);
 	}
 
 	private PhysicalMachine findStoppedPhysicalMachine(Job job) {
-		/*
-		 * TODO this method needs to find the BEST FITTING stopped physical
-		 * machine for the job in this case, best fitting means the physical
-		 * machine
-		 */
-		return null;
+		PhysicalMachine[] candidates = cloudCluster.getStoppedHostingCandidates(job);
+		if (candidates.length == 0) {
+			return null;
+		}
+		BestFit<PhysicalMachine> bestFits = new BestFit<PhysicalMachine>(candidates);
+		return (PhysicalMachine)bestFits.getBestFittingMachine(job);
 	}
 
 	public static JobScheduler getInstance() {

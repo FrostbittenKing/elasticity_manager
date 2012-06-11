@@ -7,10 +7,6 @@ public class PhysicalMachineException extends Exception{
 		super();
 	}
 
-	public PhysicalMachineException(String message, Throwable cause,
-			boolean enableSuppression, boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
 
 	public PhysicalMachineException(String message, Throwable cause) {
 		super(message, cause);
