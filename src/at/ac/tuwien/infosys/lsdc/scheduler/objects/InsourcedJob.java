@@ -112,6 +112,13 @@ public class InsourcedJob extends Job{
 		return currentVirtualMachineEnvironment;
 	}
 	
+	public InsourcedJob modifyCosts(Double multiplicator) {
+		return new InsourcedJob(
+				new Double(Math.ceil(this.consumedDiskMemory * multiplicator)).intValue(), 
+				new Double(Math.ceil(this.consumedMemory * multiplicator)).intValue(), 
+				new Double(Math.ceil(this.consumedCPUs * multiplicator)).intValue(), remainingExecutionTime);
+	}
+	
 	public OutsourcedJob makeOutsourcedJob(){
 		return new OutsourcedJob(consumedDiskMemory, consumedMemory, consumedCPUs, remainingExecutionTime);
 	}
