@@ -34,6 +34,10 @@ public class Assignment implements Comparable<Assignment>{
 	public PhysicalMachine[] getRunningPhysicalMachines() {
 		return runningPhysicalMachines;
 	}
+	
+	public void setRunningPhysicalMachines(PhysicalMachine[] pms) {
+		this.runningPhysicalMachines = pms;
+	}
 
 	public PhysicalMachine[] getStoppedPhysicalMachines() {
 		return stoppedPhysicalMachines;

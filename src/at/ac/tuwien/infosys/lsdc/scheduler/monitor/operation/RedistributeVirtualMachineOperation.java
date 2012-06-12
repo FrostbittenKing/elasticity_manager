@@ -33,7 +33,7 @@ public class RedistributeVirtualMachineOperation implements IOperation {
 				solutions.add(newChange);
 			}
 		}
-		//TODO: SolutionReducer.reduce(solutions);
+		SolutionReducer.reduce(solutions);
 		return solutions;
 	}
 }

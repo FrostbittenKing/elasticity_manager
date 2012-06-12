@@ -2,8 +2,10 @@ package at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation;
 
 import java.util.ArrayList;
 
+import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.Assignment;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.Change;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step.MoveVMStep;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 
@@ -13,21 +15,26 @@ public class RedistributePhysicalMachineOperation implements IOperation {
 	public ArrayList<Change> execute(Assignment source) {
 		ArrayList<Change> solutions = new ArrayList<Change>();
 		
-		PhysicalMachine[] PMs = source.getRunningPhysicalMachines().clone();
-		
-		for (PhysicalMachine currentPM : PMs){
-			for(VirtualMachine currentVM : currentPM.getVirtualMachines().values()){
-				// move this VM to other PM
+		pmLoop: for (int i = 0; i < source.getRunningPhysicalMachines().length; i++){
+			PhysicalMachine[] PMs = source.getRunningPhysicalMachines().clone();
+			Change change = new Change(source, new Assignment(PMs, source.getStoppedPhysicalMachines().clone()));
+			
+			for(VirtualMachine currentVM : PMs[i].getVirtualMachines().values()){
+				BestFit<PhysicalMachine> bestFit = new BestFit<PhysicalMachine>(PMs);
+				
+				PhysicalMachine target = (PhysicalMachine) bestFit.getBestFittingMachine(currentVM);
+				if (target == null)
+					continue pmLoop;
+				
+				MoveVMStep step = new MoveVMStep(PMs[i], target, currentVM);
+				step.execute();
+				change.addStep(step);
 				
 			}
-			// add created solution
-			Assignment destination = new Assignment(
-					PMs, 
-					source.getStoppedPhysicalMachines());
-//			reduce(destination);
-			
-			solutions.add(new Change(source, destination));
+			solutions.add(change);
 		}
+		SolutionReducer.reduce(solutions);
+		
 		return solutions;
 	}
 
