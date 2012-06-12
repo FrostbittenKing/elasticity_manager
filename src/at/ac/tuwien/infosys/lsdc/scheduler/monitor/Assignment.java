@@ -1,10 +1,13 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.monitor;
 
+import java.util.ArrayList;
+
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 
 public class Assignment implements Comparable<Assignment>{
 	private PhysicalMachine[] runningPhysicalMachines = null;
 	private PhysicalMachine[] stoppedPhysicalMachines = null;
+	private ArrayList<Change> neighborAssignments = new ArrayList<Change>();
 	
 	private Integer runningCosts = null;
 	private Integer migrationCosts = null;
@@ -35,6 +38,12 @@ public class Assignment implements Comparable<Assignment>{
 	public PhysicalMachine[] getStoppedPhysicalMachines() {
 		return stoppedPhysicalMachines;
 	}
+	
+	public void addNeighbor(Change change){
+		neighborAssignments.add(change);
+	}
+	
+	
 
 	@Override
 	public int compareTo(Assignment o) {
