@@ -146,4 +146,23 @@ public class SimulationParameters {
 	public void setOutSourceCostsPerCycle(Double outSourceCostsPerCycle) {
 		this.outSourceCostsPerCycle = outSourceCostsPerCycle;
 	}
+
+	@Override
+	public String toString() {
+		return "SimulationParameters [minCPUCount=" + minCPUCount
+				+ ", maxCPUCount=" + maxCPUCount + ", minMemorySize="
+				+ minMemorySize + ", maxMemorySize=" + maxMemorySize
+				+ ", minDiskSize=" + minDiskSize + ", maxDiskSize="
+				+ maxDiskSize + ", minExecutionTime=" + minExecutionTime
+				+ ", maxExecutionTime=" + maxExecutionTime + ", numberOfJobs="
+				+ numberOfJobs + ", jobSchedulingDelay=" + jobSchedulingDelay
+				+ ", jobMigrationCost=" + jobMigrationCost
+				+ ", virtualMachineMigrationCost="
+				+ virtualMachineMigrationCost + ", physicalMachineBootCost="
+				+ physicalMachineBootCost + ", outSourceCostsPerCycle="
+				+ outSourceCostsPerCycle + ", physicalMachines="
+				+ physicalMachines + "]";
+	}
+	
+	
 }

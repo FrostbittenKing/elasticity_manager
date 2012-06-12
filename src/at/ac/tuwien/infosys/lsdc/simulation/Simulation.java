@@ -36,6 +36,7 @@ public class Simulation {
 			monitor = new Monitor(MONITOR_OUTPUT_FILENAME);
 			timer.scheduleAtFixedRate(monitor, 0, MONITOR_POLLING_INTERVAL);
 			
+			System.err.println(parameters.toString());
 			for (int i = 0; i < parameters.getNumberOfJobs(); i++){
 				JobScheduler.getInstance().scheduleJob(createJob(parameters));
 				Thread.sleep((long) parameters.getJobSchedulingDelay());

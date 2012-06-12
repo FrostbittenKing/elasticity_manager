@@ -3,10 +3,13 @@ package at.ac.tuwien.infosys.lsdc.scheduler;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import sun.misc.PerformanceLogger;
+
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.exception.IllegalValueException;
 import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.PerformanceMonitor;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
@@ -60,6 +63,7 @@ public class JobScheduler {
 		this.physicalMachineBootCost = physicalMachineBootCost;
 		JobOutsourcer.getInstance().setOutsourceCosts(outsourceCosts);
 		currentPolicyLevel = PolicyLevel.GREEN;
+		monitorListener = PerformanceMonitor.getInstance();
 	}
 
 	public synchronized void scheduleJob(InsourcedJob job) {
@@ -83,7 +87,8 @@ public class JobScheduler {
 						InsourcedJob policyAwareJobCosts = job.modifyCosts(currentPolicyLevel.getOverBudget());
 						// start the matching physical machine, and create a policylevel-aware VM machine
 						// return the VM
-						VirtualMachine startedVM = cloudCluster.startMachine(stoppedPhysicalMachine).startVirtualMachine(
+						PhysicalMachine newRunningMachine = cloudCluster.startMachine(stoppedPhysicalMachine); 
+						VirtualMachine startedVM = newRunningMachine.startVirtualMachine(
 								policyAwareJobCosts.getConsumedDiskMemory(), 
 								policyAwareJobCosts.getConsumedMemory(), 
 								policyAwareJobCosts.getConsumedCPUs());

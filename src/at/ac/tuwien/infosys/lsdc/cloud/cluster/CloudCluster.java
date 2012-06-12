@@ -110,7 +110,7 @@ public class CloudCluster implements IJobEventListener {
 	}
 	
 	public PhysicalMachine startMachine(PhysicalMachine machine) {
-		runningMachines.put(machine.getId(), offlineMachines.remove(machine));
+		runningMachines.put(machine.getId(), offlineMachines.remove(machine.getId()));
 		return machine;
 	}
 	

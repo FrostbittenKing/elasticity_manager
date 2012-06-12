@@ -143,7 +143,17 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 		
 		clonedMachine.setVirtualMachines((HashMap<Integer, VirtualMachine>)virtualMachines.clone());		
 		return clonedMachine;
-	}	
+	}
 	
+//	@Override
+//	public boolean equals(Object o){
+//		if (o instanceof PhysicalMachine){
+//			PhysicalMachine machine = (PhysicalMachine)o;
+//			if (this.id.equals(machine.getId())){
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 	
 }
