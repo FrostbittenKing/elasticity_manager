@@ -35,3 +35,4 @@ nbproject/private/
 *.lock
 *.DS_Store
 *.out
+monitorOutput.txt
