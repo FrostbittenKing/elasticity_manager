@@ -73,4 +73,20 @@ public class BestFit<T extends IResourceInformation> {
 		return (Machine)machines[currentBestMachinePosition];
 		//return totalResources[currentBestMachinePosition].getId();
 	}
+	
+	public Machine getBestFittingMachine(Machine machine){
+		/* TODO:
+		 * find the best fitting physical machine for @param machine, ignoring the 
+		 * physical machine as destination that @param machine is currently assigned to 
+		 */
+		return null;
+	}
+	
+	public Machine getBestFittingMachineIgnoreCurrent(InsourcedJob job){
+		/* TODO:
+		 * find the best fitting virtual machine for @param job, ignoring the
+		 * virtual machine as destination that @param job is currently assigned to
+		 */
+		return null;
+	}
 }
