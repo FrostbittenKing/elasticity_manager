@@ -29,8 +29,6 @@ public class CloudCluster implements IJobEventListener {
 	private Integer totalCPUs = 0;
 	private Integer totalDiskMemory = 0;
 
-	private Integer currentCycleCosts = 0;
-
 	public CloudCluster(HashMap<Integer, PhysicalMachine> physicalMachines) {
 		this.physicalMachines = physicalMachines;
 		this.offlineMachines = new HashMap<Integer, PhysicalMachine>();
@@ -164,5 +162,6 @@ public class CloudCluster implements IJobEventListener {
 		currentUsedCPUs -= job.getConsumedCPUs();
 		currentUsedDiskMemory -= job.getConsumedDiskMemory();
 		currentUsedMemory -= job.getConsumedMemory();
+		job.getCurrentVirtualMachineEnvironment().removeJob(job);
 	}
 }
