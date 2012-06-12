@@ -94,9 +94,9 @@ public class PerformanceMonitor implements IJobEventListener {
 		// * until stopping condition is met
 		// *   iterate through neighborhoods
 		// *     (generate (random) solution y by applying change-op)
-		// *     find local minimum of y -> y'
+		// *     find local minimum of y: y'
 		// *     if y' better than initial solution, assign as new starting point and reset neighborhood-cnt
-		// *     neighborhood++
+		// *     else neighborhood++
 		// *   until neighborhood_max
 		// * end
 	}
