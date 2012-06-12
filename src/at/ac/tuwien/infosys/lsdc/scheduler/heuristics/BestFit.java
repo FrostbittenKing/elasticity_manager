@@ -41,6 +41,7 @@ public class BestFit<T extends IResourceInformation> {
 		Resource currentResource;
 		for (T currentMachine : machines) {
 			currentResource = currentMachine.getUsedResources();
+		
 			currentResource.addJob(job);
 			currentUsedResources[machinecount] = currentResource;
 			totalResources[machinecount] = currentMachine.getTotalResources();
