@@ -143,6 +143,10 @@ public class VirtualMachine extends Machine implements IResourceInformation, Clo
 		this.runningJobThreads = runningJobThreads;
 	}
 
+	public HashMap<InsourcedJob, Thread> getRunningJobs() {
+		return runningJobThreads;
+	}
+
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		VirtualMachine clonedMachine = new VirtualMachine();

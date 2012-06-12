@@ -1,4 +1,4 @@
-package at.ac.tuwien.infosys.lsdc.scheduler.monitor.strategy;
+package at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation;
 
 public enum OperationType {
 	Start_VM,

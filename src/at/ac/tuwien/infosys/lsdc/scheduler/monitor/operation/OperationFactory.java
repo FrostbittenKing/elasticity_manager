@@ -1,4 +1,6 @@
-package at.ac.tuwien.infosys.lsdc.scheduler.monitor.strategy;
+package at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation;
+
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.exception.OperationNotSupportedException;
 
 public class OperationFactory {
 	private static OperationFactory instance = null;
