@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.statistics;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -45,11 +46,11 @@ IStatisticsOutputFormatter {
 					for ( int i = 0; i < nrOfColumns; i++) {
 						headerLine += "\t" + String.valueOf((char)++x) + "\n";
 					}
-					fileOutput = new PrintWriter(fileName);
-					fileOutput.write(headerLine);
+					fileOutput = new PrintWriter(new FileWriter(outputFile),true);
+					fileOutput.append(headerLine);
 				}
 				else {
-					fileOutput = new PrintWriter(fileName);
+					fileOutput = new PrintWriter(new FileWriter(outputFile),true);
 				}
 				
 				
@@ -66,7 +67,7 @@ IStatisticsOutputFormatter {
 			for (Object value : currentLine) {
 				currentOutputLine += "\t" + (String)value; 
 			}
-			fileOutput.write(currentOutputLine + "\n");
+			fileOutput.append(currentOutputLine + "\n");
 		}
 		fileOutput.close();
 	}
