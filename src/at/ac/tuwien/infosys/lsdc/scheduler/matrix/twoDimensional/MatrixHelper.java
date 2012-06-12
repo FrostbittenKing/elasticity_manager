@@ -49,7 +49,7 @@ public class MatrixHelper {
 			int size = getCurrentYSize(twoDimMatrix);
 			
 			// check if a row can be added
-			if (size == matrix.getDimensions()[1]) {
+			if (size == matrix.getDimensions()[0]) {
 				return null;
 			}
 			
