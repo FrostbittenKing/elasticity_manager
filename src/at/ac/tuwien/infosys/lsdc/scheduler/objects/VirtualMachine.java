@@ -1,6 +1,8 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
@@ -17,6 +19,8 @@ public class VirtualMachine extends Machine implements IResourceInformation, Clo
 	private PhysicalMachine host = null;
 	
 	private HashMap<InsourcedJob, Thread> runningJobThreads = new HashMap<InsourcedJob, Thread>();
+	
+	Map map = Collections.synchronizedMap(runningJobThreads);
 	
 	private Integer id = 0;
 	
@@ -45,7 +49,7 @@ public class VirtualMachine extends Machine implements IResourceInformation, Clo
 		runningJobThreads.remove(job);
 		currentUsedTotalCPUs -= job.getConsumedCPUs();
 		currentUsedTotalDiskMemory -= job.getConsumedDiskMemory();
-		currentUsedTotalMemory -= job.getConsumedMemory();	
+		currentUsedTotalMemory -= job.getConsumedMemory();
 	}
 	
 	public void stopJobs(){

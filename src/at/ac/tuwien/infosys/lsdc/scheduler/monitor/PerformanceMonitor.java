@@ -38,7 +38,7 @@ public class PerformanceMonitor implements IJobEventListener {
 
 	@Override
 	public void jobAdded(InsourcedJob job) {
-		free_resources();
+//		free_resources();
 		monitor();
 	}
 

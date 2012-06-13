@@ -1,13 +1,12 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.exceptions.PhysicalMachineException;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 
 
@@ -26,7 +25,7 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 	
 	private transient Integer currentMaxVMId = 0;
 	
-	public VirtualMachine startVirtualMachine(Integer neededDiskMemory,Integer neededMemory, Integer neededCPUS) {
+	public synchronized VirtualMachine startVirtualMachine(Integer neededDiskMemory,Integer neededMemory, Integer neededCPUS) {
 		usedCPUs += neededCPUS;
 		usedMemory += neededMemory;
 		usedDiskMemory += neededDiskMemory;
@@ -36,7 +35,7 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 		return vm;
 	}
 	
-	public HashMap<Integer, VirtualMachine> getVirtualMachines() {
+	public synchronized HashMap<Integer, VirtualMachine> getVirtualMachines() {
 		return virtualMachines;
 	}
 
@@ -160,11 +159,11 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 
 	public void shutdown() {
 		CloudCluster cluster = JobScheduler.getInstance().getCluster();
-		
-		List<PhysicalMachine> runningPMs = Arrays.asList(cluster.getRunningMachines());
-		List<PhysicalMachine> stoppedPMs = Arrays.asList(cluster.getRunningMachines());
-		runningPMs.remove(this);
-		stoppedPMs.add(this);
+		try {
+			cluster.stopMachine(this);
+		} catch (PhysicalMachineException e) {
+			System.out.println("Ohoh, stopping machine not possible?" + e.getMessage());
+		}
 	}
 	
 //	@Override
