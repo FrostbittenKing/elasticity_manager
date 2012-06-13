@@ -5,13 +5,21 @@ import at.ac.tuwien.infosys.lsdc.scheduler.objects.OutsourcedJob;
 public class JobOutsourcer implements IOutsourcedJobCompletionListener{
 	private static JobOutsourcer instance = null;
 	private Double outSourceCostsPerCycle = null;
+	private Double currentCosts = null;
+	private Double totalSumCosts = null;
 	
-	private JobOutsourcer(){
-		
+	
+	private JobOutsourcer(){		
+		totalSumCosts = 0.0;
+		currentCosts = 0.0;
 	}
 	
 	public void outSourceJob(OutsourcedJob job){
+		System.out.println("Outsourcing job.");
 		job.setListener(this);
+		Double jobCosts = job.getExecutionTime() * outSourceCostsPerCycle;
+		currentCosts += jobCosts;
+		totalSumCosts += jobCosts;
 		new Thread(job).start();
 	}
 	
@@ -28,7 +36,15 @@ public class JobOutsourcer implements IOutsourcedJobCompletionListener{
 
 	@Override
 	public void jobCompleted(OutsourcedJob job) {
-		// TODO Auto-generated method stub
-		
+		System.out.println("Outsourced job finished: " + job.toString());
+		currentCosts -= job.getExecutionTime() * outSourceCostsPerCycle;		
+	}
+
+	public void setCurrentCosts(Double currentCosts) {
+		this.currentCosts = currentCosts;
+	}
+
+	public void setTotalSumCosts(Double totalSumCosts) {
+		this.totalSumCosts = totalSumCosts;
 	}
 }

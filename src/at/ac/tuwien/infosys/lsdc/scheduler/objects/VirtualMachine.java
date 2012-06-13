@@ -37,6 +37,7 @@ public class VirtualMachine extends Machine implements IResourceInformation, Clo
 		currentUsedTotalCPUs += job.getConsumedCPUs();
 		currentUsedTotalDiskMemory += job.getConsumedDiskMemory();
 		currentUsedTotalMemory += job.getConsumedMemory();
+		job.setCurrentVirtualMachineEnvironment(this);
 		jobThread.start();
 	}
 	
@@ -91,6 +92,13 @@ public class VirtualMachine extends Machine implements IResourceInformation, Clo
 		return job.getConsumedCPUs() <= (totalAvailableCPUs - currentUsedTotalCPUs) && 
 				job.getConsumedMemory() <= (totalAvailableMemory - currentUsedTotalMemory) &&
 				job.getConsumedDiskMemory() <= (totalAvailableDiskMemory - currentUsedTotalDiskMemory);
+	}
+	
+	public void removeJob(InsourcedJob job){
+		currentUsedTotalCPUs -= job.getConsumedCPUs();
+		currentUsedTotalDiskMemory -= job.getConsumedDiskMemory();
+		currentUsedTotalMemory -= job.getConsumedMemory();
+		runningJobThreads.remove(job);
 	}
 
 	public Integer getId() {

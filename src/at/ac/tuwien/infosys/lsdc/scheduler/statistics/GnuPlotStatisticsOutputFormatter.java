@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 public class GnuPlotStatisticsOutputFormatter implements
 IStatisticsOutputFormatter {
 
-	private static final char HEADER_COLUMN_NAME_START = 'Z';
+	private static final char HEADER_COLUMN_NAME_START = (char)((int)'a' - 1);
 	private static final char HEADER_COLUMN_START  = '#';
 	private String fileName = null;
 	
@@ -20,7 +20,6 @@ IStatisticsOutputFormatter {
 	public void writeDataToFile(Object[][] data, OutputMode mode) throws StatisticsWriterException {
 		int nrOfColumns = data[0].length;
 		int x = HEADER_COLUMN_NAME_START;
-
 		File outputFile = new File(fileName);
 		PrintWriter fileOutput = null;
 		try {
@@ -44,13 +43,14 @@ IStatisticsOutputFormatter {
 				if (!outputFile.exists()) {
 					outputFile.createNewFile();
 					for ( int i = 0; i < nrOfColumns; i++) {
-						headerLine += "\t" + String.valueOf((char)++x) + "\n";
+						headerLine += "\t" + String.valueOf((char)++x);
 					}
-					fileOutput = new PrintWriter(new FileWriter(outputFile),true);
+					headerLine += "\n";
+					fileOutput = new PrintWriter(new FileWriter(outputFile,true),true);
 					fileOutput.append(headerLine);
 				}
 				else {
-					fileOutput = new PrintWriter(new FileWriter(outputFile),true);
+					fileOutput = new PrintWriter(new FileWriter(outputFile,true),true);
 				}
 				
 				

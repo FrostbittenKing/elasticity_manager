@@ -22,12 +22,17 @@ import at.ac.tuwien.infosys.lsdc.simulation.Simulation;
 public class Monitor extends TimerTask{
 	//private BufferedWriter writer = null;
 	private String fileName = null;
-	public Monitor(String outputFileName) throws IOException{
+	private long timeIndex = 0;
+	private long tickRate;
+	
+	public Monitor(String outputFileName, long tickRate) throws IOException{
 		this.fileName = outputFileName;
+		this.tickRate = tickRate;
 	}
 	
 	@Override
 	public void run() {
+		
 		ArrayList<PhysicalMachineUsage> currentUsage = JobScheduler.getInstance().getCurrentUsage();
 		PhysicalMachine[] runningMachines = JobScheduler.getInstance().getCluster().getRunningMachines();
 		
@@ -38,7 +43,8 @@ public class Monitor extends TimerTask{
 		
 		IStatisticsOutputFormatter outputFormatter = new GnuPlotStatisticsOutputFormatter(fileName);
 		try {
-			outputFormatter.writeDataToFile(GnuPlotOutputDataConverter.doubleInput(new Double[][]{new Double[]{costs}}), OutputMode.APPEND);
+			outputFormatter.writeDataToFile(GnuPlotOutputDataConverter.doubleInput(new Double[][]{new Double[]{new Double(timeIndex),costs}}), OutputMode.APPEND);
+			timeIndex += tickRate;
 		} catch (StatisticsWriterException e) {
 			System.err.println(e.getMessage());
 		}

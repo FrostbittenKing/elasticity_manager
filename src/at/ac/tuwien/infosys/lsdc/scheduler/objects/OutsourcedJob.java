@@ -24,4 +24,13 @@ public class OutsourcedJob extends Job{
 	public void setListener(IOutsourcedJobCompletionListener listener) {
 		this.listener = listener;
 	}
+
+	@Override
+	public String toString() {
+		return "OutsourcedJob [listener=" + listener + ", consumedDiskMemory="
+				+ consumedDiskMemory + ", consumedMemory=" + consumedMemory
+				+ ", consumedCPUs=" + consumedCPUs
+				+ ", remainingExecutionTime=" + remainingExecutionTime
+				+ ", lastStartTime=" + lastStartTime + "]";
+	}
 }

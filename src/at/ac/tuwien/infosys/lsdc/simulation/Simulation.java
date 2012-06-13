@@ -2,7 +2,6 @@ package at.ac.tuwien.infosys.lsdc.simulation;
 
 import java.util.Timer;
 
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParameters;
@@ -33,7 +32,7 @@ public class Simulation {
 					parameters.getPhysicalMachineBootCost(),
 					parameters.getOutSourceCostsPerCycle());
 			
-			monitor = new Monitor(MONITOR_OUTPUT_FILENAME);
+			monitor = new Monitor(MONITOR_OUTPUT_FILENAME,MONITOR_POLLING_INTERVAL);
 			timer.scheduleAtFixedRate(monitor, 0, MONITOR_POLLING_INTERVAL);
 			
 			System.err.println(parameters.toString());

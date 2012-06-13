@@ -1,7 +1,8 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.matrix;
 
 public class MultiNumber {
-
+	
+	
 	public static Number add(Number x,Number y) {
 		if (x.getClass() == Integer.class)
 			return x.intValue() + y.intValue();

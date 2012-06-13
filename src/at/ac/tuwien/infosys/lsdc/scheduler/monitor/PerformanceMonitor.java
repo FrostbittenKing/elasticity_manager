@@ -6,6 +6,7 @@ import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
+import at.ac.tuwien.infosys.lsdc.scheduler.PolicyLevel;
 import at.ac.tuwien.infosys.lsdc.scheduler.exception.IllegalValueException;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
@@ -79,7 +80,8 @@ public class PerformanceMonitor implements IJobEventListener {
 
 		try {
 			JobScheduler.getInstance().setCurrentPolicyLevel(
-					JobScheduler.getAccordingPolicyLevel(usagePercent));
+					PolicyLevel.getAccordingPolicyLevel(usagePercent));
+			System.out.println("SETTING POLICY LEVEL TO: " + PolicyLevel.getAccordingPolicyLevel(usagePercent).toString());
 		} catch (IllegalValueException e) {
 			e.printStackTrace();
 		}
