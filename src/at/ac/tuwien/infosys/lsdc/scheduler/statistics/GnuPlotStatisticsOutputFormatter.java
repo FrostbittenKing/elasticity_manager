@@ -43,8 +43,9 @@ IStatisticsOutputFormatter {
 				if (!outputFile.exists()) {
 					outputFile.createNewFile();
 					for ( int i = 0; i < nrOfColumns; i++) {
-						headerLine += "\t" + String.valueOf((char)++x) + "\n";
+						headerLine += "\t" + String.valueOf((char)++x);
 					}
+					headerLine += "\n";
 					fileOutput = new PrintWriter(new FileWriter(outputFile,true),true);
 					fileOutput.append(headerLine);
 				}

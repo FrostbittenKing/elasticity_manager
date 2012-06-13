@@ -33,7 +33,7 @@ public class Simulation {
 					parameters.getPhysicalMachineBootCost(),
 					parameters.getOutSourceCostsPerCycle());
 			
-			monitor = new Monitor(MONITOR_OUTPUT_FILENAME);
+			monitor = new Monitor(MONITOR_OUTPUT_FILENAME,MONITOR_POLLING_INTERVAL);
 			timer.scheduleAtFixedRate(monitor, 0, MONITOR_POLLING_INTERVAL);
 			
 			System.err.println(parameters.toString());

@@ -6,10 +6,10 @@ import java.lang.reflect.InvocationTargetException;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.matrix.twoDimensional.MatrixHelper;
 
-public class Matrix<T> {
+public class Matrix<NumberType extends Number> {
 	private Object matrixObject = null;
 	private int[] dimensions;
-	private Class<?> type;
+	private Class<NumberType> type;
 
 
 	
@@ -25,15 +25,18 @@ public class Matrix<T> {
 		this.dimensions = dimensions;
 	}
 
-	public Matrix(Class<?> type, int...dimensions)  {
+	public Matrix(Class<NumberType> type, int...dimensions)  {
 		//at.ac.tuwien.infosys.lsdc.scheduler.matrix = type.cast(Array.newInstance(type.getComponentType(), dimensions[0]));
 		/*for (Integer currentDimension : dimensions)  {
 		}*/
 		this.dimensions = dimensions;
-		
 		this.type = type;
-		try {
+		/*try {
+			
+			Object foo = Array.newInstance(type, dimensions);
+			System.out.println("foo");
 			matrixObject = instantiateArray(Array.newInstance(type, dimensions));
+			
 		}  catch (IllegalArgumentException e) {
 			throw new MatrixInitializationException(e.getMessage(), e);
 		} catch (SecurityException e) {} catch (InstantiationException e) {
@@ -43,15 +46,15 @@ public class Matrix<T> {
 		} catch (NoSuchMethodException e) {
 			throw new MatrixInitializationException(e.getMessage(), e);
 		} catch (NegativeArraySizeException e) {
-			// TODO Auto-generated catch block
 			throw new MatrixInitializationException(e.getMessage(), e);
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			throw new MatrixInitializationException(e.getMessage(), e);
 		}
-
+	*/
+		matrixObject = Array.newInstance(type, dimensions);
 	}
 
+	@Deprecated
 	private Object instantiateArray(Object array) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException {
 		if (array != null && array.getClass().isArray()) {
 			int length = Array.getLength(array);
@@ -98,25 +101,25 @@ public class Matrix<T> {
 		return true;
 	}
 
-	public void add(Matrix<T> array) {
+	public void add(Matrix<NumberType> array) {
 		elementOperation(this.matrixObject,array.matrixObject, ElementOp.ADDITION);
 	}
 
-	public void sub(Matrix<T> array) {
+	public void sub(Matrix<NumberType> array) {
 		elementOperation(this.matrixObject, array.matrixObject, ElementOp.SUBTRACTION);
 	}
 	
-	public void mulElement(Matrix<T> array) {
+	public void mulElement(Matrix<NumberType> array) {
 		elementOperation(this.matrixObject, array.matrixObject, ElementOp.MULTIPLICATION);
 	}
 	
-	public void divElement(Matrix<T> array) {
+	public void divElement(Matrix<NumberType> array) {
 		elementOperation(this.matrixObject, array.matrixObject, ElementOp.DIVISION);
 	}
 
 	public void powElement(Integer exponent) {
 		try {
-			Matrix<T> copy = (Matrix<T>)this.clone();
+			Matrix<NumberType> copy = (Matrix<NumberType>)this.clone();
 			for (Integer i = 0; i < exponent - 1; i++) {
 				elementOperation(this.matrixObject, copy.matrixObject, ElementOp.MULTIPLICATION);
 			}
@@ -134,13 +137,15 @@ public class Matrix<T> {
 				for (int i = 0; i < length; i++) {
 					Object arrayElementTarget = Array.get(target,i);
 					Object arrayElementSource = Array.get(source,i);
-					Array.set(target, i,elementOperation(arrayElementTarget,arrayElementSource, operation));
+					Array.set(target, i,
+							elementOperation(arrayElementTarget,arrayElementSource, operation));
+					
 				}
 			}
 			else {
-				Class<?> type = target.getClass();
-				Number x = (Number)type.cast(target);
-				Number y = (Number)type.cast(source);
+				Class<Number> type = (Class<Number>)target.getClass();
+				Number x = type.cast(target);
+				Number y = type.cast(source);
 				switch (operation) {
 				case ADDITION:
 					return MultiNumber.add(x, y);
@@ -176,7 +181,7 @@ public class Matrix<T> {
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		
-			Matrix<?> m =  new Matrix<Number>(type,dimensions);
+			Matrix<?> m =  new Matrix<NumberType>(type,dimensions);
 			m.setMatrix((Object[])cloneMatrix(this.matrixObject));
 			return m;
 		
