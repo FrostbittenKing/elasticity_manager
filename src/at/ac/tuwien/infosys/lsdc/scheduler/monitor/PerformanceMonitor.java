@@ -90,6 +90,10 @@ public class PerformanceMonitor implements IJobEventListener {
 	private void analyze() {
 		// Analyze the gathered Information and see if it can be optimized
 		// : i.e. find a better job/VM/PM-assignment
+		
+		// optimize actual assignment
+		// i.e. shutdown all not needed machines
+		
 
 		// Decide if action required, i.e. make a plan
 		// we are going to implement a vnd-variant:
