@@ -37,12 +37,16 @@ public class CloudCluster implements IJobEventListener {
 		
 		synchronized (synchedRunningMachinesMap) {
 			synchronized (synchedStoppedMachinesMap) {
-			
+				ArrayList<PhysicalMachine> toRemoveMachines = new ArrayList<PhysicalMachine>();
 				for (PhysicalMachine currentMachine : synchedRunningMachinesMap.values()) {
 					if (currentMachine.cleanupMachine()) {
-						synchedRunningMachinesMap.remove(currentMachine.getId());
+						//synchedRunningMachinesMap.remove(currentMachine.getId());
+						toRemoveMachines.add(currentMachine);
 						synchedStoppedMachinesMap.put(currentMachine.getId(), currentMachine);
 					}
+				}
+				for (PhysicalMachine currentToRemove : toRemoveMachines) {
+					synchedRunningMachinesMap.remove(currentToRemove.getId());
 				}
 				
 			}

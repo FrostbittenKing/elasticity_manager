@@ -172,11 +172,16 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 	@Override
 	public synchronized boolean cleanupMachine() {
 		Map<Integer, VirtualMachine> cleanupMachines = getVirtualMachines();
+		ArrayList<VirtualMachine> toRemove = new ArrayList<VirtualMachine>();
 		synchronized (cleanupMachines) { 
 			for (VirtualMachine currentVM : cleanupMachines.values()) {
 				if (currentVM.cleanupMachine()) {
-					removeVM(currentVM);
+					toRemove.add(currentVM);
+					//removeVM(currentVM);
 				}
+			}
+			for (VirtualMachine remove : toRemove) {
+				removeVM(remove);
 			}
 		}
 		return virtualMachines.isEmpty();
