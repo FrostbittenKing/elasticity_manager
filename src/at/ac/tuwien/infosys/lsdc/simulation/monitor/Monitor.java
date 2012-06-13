@@ -1,14 +1,10 @@
 package at.ac.tuwien.infosys.lsdc.simulation.monitor;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TimerTask;
 
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.GnuPlotOutputDataConverter;
@@ -17,7 +13,6 @@ import at.ac.tuwien.infosys.lsdc.scheduler.statistics.IStatisticsOutputFormatter
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.IStatisticsOutputFormatter.OutputMode;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.StatisticsWriterException;
-import at.ac.tuwien.infosys.lsdc.simulation.Simulation;
 
 public class Monitor extends TimerTask{
 	//private BufferedWriter writer = null;
@@ -33,17 +28,16 @@ public class Monitor extends TimerTask{
 	@Override
 	public void run() {
 		
-		ArrayList<PhysicalMachineUsage> currentUsage = JobScheduler.getInstance().getCurrentUsage();
+		/*ArrayList<PhysicalMachineUsage> currentUsage = JobScheduler.getInstance().getCurrentUsage();
 		PhysicalMachine[] runningMachines = JobScheduler.getInstance().getCluster().getRunningMachines();
-		
-		Double costs = 0.0;
-		for (PhysicalMachine currentMachine : runningMachines) {
-			costs += currentMachine.getPricePerCycle();
-		}
+		*/
+		Double costs = getRelativeCosts();
+		Double relativeUsage = getRelativePMUsage();
 		
 		IStatisticsOutputFormatter outputFormatter = new GnuPlotStatisticsOutputFormatter(fileName);
 		try {
-			outputFormatter.writeDataToFile(GnuPlotOutputDataConverter.doubleInput(new Double[][]{new Double[]{new Double(timeIndex),costs}}), OutputMode.APPEND);
+			outputFormatter.writeDataToFile(
+					GnuPlotOutputDataConverter.doubleInput(new Double[][]{new Double[]{new Double(timeIndex),costs,relativeUsage}}), OutputMode.APPEND);
 			timeIndex += tickRate;
 		} catch (StatisticsWriterException e) {
 			System.err.println(e.getMessage());
@@ -52,5 +46,31 @@ public class Monitor extends TimerTask{
 		// plotting usage/machine -- HISTOGRAM y: %, x: machines
 		// total costs of all machines over timey: sum costs, x: time
 	}
+	
+	private Double getRelativeCosts() {
+		Double costs = 0.0;
+		PhysicalMachine[] runningMachines = JobScheduler.getInstance().getCluster().getRunningMachines();
+		PhysicalMachine[] stoppedMachines = JobScheduler.getInstance().getCluster().getOfflineMachines();
+		for (PhysicalMachine currentMachine : runningMachines) {
+			costs += currentMachine.getPricePerCycle();
+			
+		}
+		Double maxCosts = costs.doubleValue();
+		for (PhysicalMachine currentOfflineMachine : stoppedMachines) {
+			maxCosts += currentOfflineMachine.getPricePerCycle();
+		}
+		return costs / maxCosts;
+	}
+	
+	private Double getRelativePMUsage() {
+		ArrayList<PhysicalMachineUsage> currentUsage = JobScheduler.getInstance().getCurrentUsage();
+		Double relativeUsage = 0.0;
+		for (PhysicalMachineUsage currentMachine : currentUsage) {
+			relativeUsage += currentMachine.getUsageLoad();
+		}
+		return relativeUsage / currentUsage.size();
+	}
+	
+	
 
 }
