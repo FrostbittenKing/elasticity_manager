@@ -3,6 +3,9 @@ package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 
 public class InsourcedJob extends Job implements Cloneable{
+	private static Integer idCounter = 0;
+	
+	private Integer id;
 	private IJobEventListener cloudListener;
 	private IJobEventListener monitorListener;
 	private VirtualMachine currentVirtualMachineEnvironment = null;
@@ -50,7 +53,16 @@ public class InsourcedJob extends Job implements Cloneable{
 		this.monitorListener = monitorListener;
 	}
 	
+	public Integer getId(){
+		if (id == null){
+			id = InsourcedJob.generateID();
+		}
+		return id;
+	}
 	
+	public void setId(Integer id){
+		this.id = id;
+	}
 	
 	public void setCurrentVirtualMachineEnvironment(
 			VirtualMachine currentVirtualMachineEnvironment) {
@@ -82,6 +94,7 @@ public class InsourcedJob extends Job implements Cloneable{
 		
 		clonedJob.setRemainingExecutionTime(remainingExecutionTime);
 		clonedJob.setLastStartTime(lastStartTime);	
+		clonedJob.setId(id);
 		
 		return super.clone();
 	}
@@ -95,4 +108,8 @@ public class InsourcedJob extends Job implements Cloneable{
 				+ ", remainingExecutionTime=" + remainingExecutionTime
 				+ ", lastStartTime=" + lastStartTime + "]";
 	}	
+	
+	private static synchronized Integer generateID(){
+		return ++idCounter;
+	}
 }
