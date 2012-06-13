@@ -174,5 +174,12 @@ public class VirtualMachine extends Machine implements IResourceInformation, Clo
 		clonedMachine.setRunningJobThreads((HashMap<InsourcedJob, Thread>)runningJobThreads.clone());
 		
 		return clonedMachine;
-	}	
+	}
+
+	@Override
+	public boolean cleanupMachine() {
+		return runningJobThreads.isEmpty();
+	}
+	
+	
 }

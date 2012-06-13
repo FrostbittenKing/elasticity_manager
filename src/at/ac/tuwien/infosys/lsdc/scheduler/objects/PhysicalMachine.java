@@ -1,7 +1,9 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
@@ -31,12 +33,13 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 		usedDiskMemory += neededDiskMemory;
 		
 		VirtualMachine vm = new VirtualMachine(this,createVMId(),neededDiskMemory, neededMemory, neededCPUS);
-		virtualMachines.put(vm.getId(), vm);
+		getVirtualMachines().put(vm.getId(), vm);
+		//virtualMachines.put(vm.getId(), vm);
 		return vm;
 	}
 	
-	public synchronized HashMap<Integer, VirtualMachine> getVirtualMachines() {
-		return virtualMachines;
+	public synchronized Map<Integer, VirtualMachine> getVirtualMachines() {
+		return Collections.synchronizedMap(virtualMachines);
 	}
 
 	private Integer createVMId() {
@@ -154,7 +157,7 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 		usedMemory -= VM.getTotalAvailableMemory();
 		usedDiskMemory -= VM.getTotalAvailableDiskMemory();
 		
-		virtualMachines.remove(VM.getId());
+		getVirtualMachines().remove(VM.getId());
 	}
 
 	public void shutdown() {
@@ -164,6 +167,24 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 		} catch (PhysicalMachineException e) {
 			System.out.println("Ohoh, stopping machine not possible?" + e.getMessage());
 		}
+	}
+
+	@Override
+	public synchronized boolean cleanupMachine() {
+		Map<Integer, VirtualMachine> cleanupMachines = getVirtualMachines();
+		ArrayList<VirtualMachine> toRemove = new ArrayList<VirtualMachine>();
+		synchronized (cleanupMachines) { 
+			for (VirtualMachine currentVM : cleanupMachines.values()) {
+				if (currentVM.cleanupMachine()) {
+					toRemove.add(currentVM);
+					//removeVM(currentVM);
+				}
+			}
+			for (VirtualMachine remove : toRemove) {
+				removeVM(remove);
+			}
+		}
+		return virtualMachines.isEmpty();
 	}
 	
 //	@Override

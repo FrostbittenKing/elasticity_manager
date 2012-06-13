@@ -34,6 +34,7 @@ public class SolutionReducer {
 	}
 	
 	public static void reduce(CloudCluster cluster) {
-		reduce(Arrays.asList(cluster.getRunningMachines()));
+		cluster.cleanup();
+		//reduce(Arrays.asList(cluster.getRunningMachines()));
 	}
 }

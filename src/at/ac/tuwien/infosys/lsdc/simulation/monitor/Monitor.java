@@ -68,7 +68,7 @@ public class Monitor extends TimerTask{
 		for (PhysicalMachineUsage currentMachine : currentUsage) {
 			relativeUsage += currentMachine.getUsageLoad();
 		}
-		return relativeUsage / currentUsage.size();
+		return (currentUsage.size() > 0 ? relativeUsage / currentUsage.size() : 0.0);
 	}
 	
 	

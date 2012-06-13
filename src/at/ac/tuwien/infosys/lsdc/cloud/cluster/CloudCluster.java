@@ -2,7 +2,9 @@ package at.ac.tuwien.infosys.lsdc.cloud.cluster;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.exceptions.PhysicalMachineException;
 import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
@@ -28,6 +30,28 @@ public class CloudCluster implements IJobEventListener {
 	private Integer totalMemory = 0;
 	private Integer totalCPUs = 0;
 	private Integer totalDiskMemory = 0;
+	
+	public void cleanup() {
+		Map<Integer,PhysicalMachine> synchedRunningMachinesMap = Collections.synchronizedMap(runningMachines);
+		Map<Integer,PhysicalMachine> synchedStoppedMachinesMap = Collections.synchronizedMap(offlineMachines);
+		
+		synchronized (synchedRunningMachinesMap) {
+			synchronized (synchedStoppedMachinesMap) {
+				ArrayList<PhysicalMachine> toRemoveMachines = new ArrayList<PhysicalMachine>();
+				for (PhysicalMachine currentMachine : synchedRunningMachinesMap.values()) {
+					if (currentMachine.cleanupMachine()) {
+						//synchedRunningMachinesMap.remove(currentMachine.getId());
+						toRemoveMachines.add(currentMachine);
+						synchedStoppedMachinesMap.put(currentMachine.getId(), currentMachine);
+					}
+				}
+				for (PhysicalMachine currentToRemove : toRemoveMachines) {
+					synchedRunningMachinesMap.remove(currentToRemove.getId());
+				}
+				
+			}
+		}
+	}
 
 	public CloudCluster(HashMap<Integer, PhysicalMachine> physicalMachines) {
 		this.physicalMachines = physicalMachines;
