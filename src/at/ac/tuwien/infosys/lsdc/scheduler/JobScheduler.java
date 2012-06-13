@@ -36,17 +36,20 @@ public class JobScheduler {
 		JobOutsourcer.getInstance().setOutsourceCosts(outsourceCosts);
 		currentPolicyLevel = PolicyLevel.GREEN;
 		monitorListener = PerformanceMonitor.getInstance();
+		PerformanceMonitor.getInstance().initialize(cloudCluster);
 	}
 
-	public synchronized void scheduleJob(InsourcedJob job) {
+	public void scheduleJob(InsourcedJob job) {
 		System.out.println("Scheduled job: " + job + " , WOOHOO!");
 
-		if (cloudCluster.jobFits(job)) {
-			System.out.println("Enough resources, trying to find slot...");
-			findFittingJobSlot(job);
-		}
-		else {
-			JobOutsourcer.getInstance().outSourceJob(job.makeOutsourcedJob());
+		synchronized (cloudCluster) {
+			if (cloudCluster.jobFits(job)) {
+				System.out.println("Enough resources, trying to find slot...");
+				findFittingJobSlot(job);
+			}
+			else {
+				JobOutsourcer.getInstance().outSourceJob(job.makeOutsourcedJob());
+			}
 		}
 	}
 
@@ -119,7 +122,7 @@ public class JobScheduler {
 		monitorListener.jobAdded(job);
 	}
 
-	private synchronized VirtualMachine findVirtualMachine(InsourcedJob job) {
+	private VirtualMachine findVirtualMachine(InsourcedJob job) {
 		InsourcedJob policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
 		VirtualMachine[] candidates = cloudCluster.getVirtualHostingCandidates(policyAwareJobRequirements);
 		if (candidates.length == 0) {
@@ -129,7 +132,7 @@ public class JobScheduler {
 		return (VirtualMachine)bestFits.getBestFittingMachine(policyAwareJobRequirements);
 	}
 
-	private synchronized PhysicalMachine findRunningPhysicalMachine(InsourcedJob job) {
+	private PhysicalMachine findRunningPhysicalMachine(InsourcedJob job) {
 		InsourcedJob policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
 		PhysicalMachine[] candidates = cloudCluster.getRunningHostingCandidates(policyAwareJobRequirements);
 
@@ -141,7 +144,7 @@ public class JobScheduler {
 		return (PhysicalMachine)bestFits.getBestFittingMachine(policyAwareJobRequirements);
 	}
 
-	private synchronized PhysicalMachine findStoppedPhysicalMachine(InsourcedJob job) {
+	private PhysicalMachine findStoppedPhysicalMachine(InsourcedJob job) {
 		InsourcedJob policyAwareJobRequirements = job.modifyCosts(currentPolicyLevel.getOverBudget());
 		PhysicalMachine[] candidates = cloudCluster.getStoppedHostingCandidates(policyAwareJobRequirements);
 

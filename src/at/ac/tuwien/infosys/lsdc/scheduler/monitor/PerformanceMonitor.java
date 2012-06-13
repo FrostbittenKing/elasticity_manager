@@ -17,6 +17,7 @@ public class PerformanceMonitor implements IJobEventListener {
 	private static PerformanceMonitor instance;
 
 	private HashMap<Integer, Resource> usagePerPM = new HashMap<Integer, Resource>();
+	private CloudCluster cluster = null;
 
 	private PerformanceMonitor() {
 
@@ -29,17 +30,25 @@ public class PerformanceMonitor implements IJobEventListener {
 		return instance;
 	}
 
+	public void initialize(CloudCluster cluster){
+		this.cluster = cluster;
+	}
+
 	@Override
 	public void jobCompleted(InsourcedJob job) {
-		free_resources();
-		monitor();
+		synchronized(cluster){
+			free_resources();
+			monitor();
+		}
 
 	}
 
 	@Override
 	public void jobAdded(InsourcedJob job) {
-//		free_resources();
-		monitor();
+		synchronized(cluster){
+			//		free_resources();
+			monitor();
+		}
 	}
 
 	private void monitor() {
@@ -51,21 +60,18 @@ public class PerformanceMonitor implements IJobEventListener {
 		// : now
 		// * get the current usage of all the PMs
 
-		CloudCluster cluster = JobScheduler.getInstance().getCluster();
-
-		setPolicyLevel(cluster);
+		setPolicyLevel();
 
 		// Gather all the necessary information
 		usagePerPM.clear();
 		for (PhysicalMachine pm : cluster.getRunningMachines()) {
 			usagePerPM.put(pm.getId(), pm.getUsedResources());
 		}
-
 		analyze();
 
 	}
 
-	private void setPolicyLevel(CloudCluster cluster) {
+	private void setPolicyLevel() {
 		Integer potEnergySum = 0;
 		Integer actEnergySum = 0;
 
@@ -93,7 +99,7 @@ public class PerformanceMonitor implements IJobEventListener {
 	private void analyze() {
 		// Analyze the gathered Information and see if it can be optimized
 		// : i.e. find a better job/VM/PM-assignment
-	
+
 		// Decide if action required, i.e. make a plan
 		// we are going to implement a vnd-variant:
 		// * until stopping condition is met
@@ -126,8 +132,8 @@ public class PerformanceMonitor implements IJobEventListener {
 		 * if not, the physicalmachine needs to be shut down
 		 */
 	}
-	
+
 	private void free_resources() {
-		SolutionReducer.reduce(JobScheduler.getInstance().getCluster());
+		SolutionReducer.reduce(cluster);
 	}
 }

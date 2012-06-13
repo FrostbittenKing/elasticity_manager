@@ -14,7 +14,7 @@ public class JobOutsourcer implements IOutsourcedJobCompletionListener{
 		currentCosts = 0.0;
 	}
 	
-	public void outSourceJob(OutsourcedJob job){
+	public synchronized void outSourceJob(OutsourcedJob job){
 		System.out.println("Outsourcing job.");
 		job.setListener(this);
 		Double jobCosts = job.getExecutionTime() * outSourceCostsPerCycle;
@@ -35,16 +35,16 @@ public class JobOutsourcer implements IOutsourcedJobCompletionListener{
 	}
 
 	@Override
-	public void jobCompleted(OutsourcedJob job) {
+	public synchronized void jobCompleted(OutsourcedJob job) {
 		System.out.println("Outsourced job finished: " + job.toString());
 		currentCosts -= job.getExecutionTime() * outSourceCostsPerCycle;		
 	}
 
-	public void setCurrentCosts(Double currentCosts) {
-		this.currentCosts = currentCosts;
+	public Double getCurrentCosts() {
+		return currentCosts;
 	}
 
-	public void setTotalSumCosts(Double totalSumCosts) {
-		this.totalSumCosts = totalSumCosts;
+	public Double getTotalSumCosts() {
+		return totalSumCosts;
 	}
 }
