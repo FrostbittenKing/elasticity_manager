@@ -2,12 +2,12 @@ package at.ac.tuwien.infosys.lsdc.scheduler.monitor;
 
 import java.util.ArrayList;
 
-import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step.OperationStep;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step.IOperationStep;
 
-public class Change {
+public class Change implements Comparable<Change>{
 	private Assignment source;
 	private Assignment destination;
-	private ArrayList<OperationStep> steps = new ArrayList<OperationStep>(); 
+	private ArrayList<IOperationStep> steps = new ArrayList<IOperationStep>(); 
 	
 	public Change(Assignment source, Assignment destination){
 		this.source = source;
@@ -22,7 +22,20 @@ public class Change {
 		return destination;
 	}
 	
-	public void addStep(OperationStep step){
+	public void addStep(IOperationStep step){
 		steps.add(step);
 	}
+
+	public ArrayList<IOperationStep> getSteps() {
+		return steps;
+	}
+
+	@Override
+	public int compareTo(Change other) {
+		
+		return destination.compareTo(other.destination);
+
+	}
+	
+	
 }

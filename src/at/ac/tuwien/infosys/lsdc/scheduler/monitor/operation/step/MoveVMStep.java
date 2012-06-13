@@ -1,10 +1,12 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.Assignment;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step.exception.StepNotReproducableException;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 
-public class MoveVMStep extends OperationStep {
+public class MoveVMStep implements IOperationStep {
 	private PhysicalMachine source;
 	private PhysicalMachine destination;
 	private VirtualMachine movedVirtualMachine;
@@ -30,14 +32,36 @@ public class MoveVMStep extends OperationStep {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(Assignment currentState) throws StepNotReproducableException {
+		/*
+		 * get actual source pm from currentstate by comparing ids
+		 * get actual destination pm the same way
+		 * get actual virtual machine by comparing ids from source pm member vms
+		 * then move the vm
+		 */
+		PhysicalMachine realSource = null;
+		PhysicalMachine realDestination = null;
+		
+		for (PhysicalMachine pm : currentState.getRunningPhysicalMachines()) {
+			if (pm.getId() == source.getId()) {
+				realSource = pm;
+			}
+			if (pm.getId() == destination.getId()) {
+				realDestination = pm;
+			}
+		}
+		
+		if (realDestination == null || realSource == null) {
+			throw new StepNotReproducableException();
+		}
+		
 		// TODO use these
-		// source.removeVM(movedVirtualMachine)
-		// destination.addVM(movedVirtualMachine)
-		movedVirtualMachine.stopJobs();
-		source.getVirtualMachines().remove(movedVirtualMachine.getId());
-		destination.getVirtualMachines().put(movedVirtualMachine.getId(), movedVirtualMachine);
-		movedVirtualMachine.resumeJobs();
+		source.removeVM(movedVirtualMachine);
+		destination.addVM(movedVirtualMachine);
+//		movedVirtualMachine.stopJobs();
+//		source.getVirtualMachines().remove(movedVirtualMachine.getId());
+//		destination.getVirtualMachines().put(movedVirtualMachine.getId(), movedVirtualMachine);
+//		movedVirtualMachine.resumeJobs();
 	}
 
 	@Override

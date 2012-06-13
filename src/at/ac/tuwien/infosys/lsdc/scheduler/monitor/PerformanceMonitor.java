@@ -1,5 +1,7 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.monitor;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
@@ -8,7 +10,13 @@ import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.PolicyLevel;
 import at.ac.tuwien.infosys.lsdc.scheduler.exception.IllegalValueException;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.IOperation;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.OperationFactory;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.OperationType;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.SolutionReducer;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.exception.OperationNotSupportedException;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step.IOperationStep;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step.exception.StepNotReproducableException;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 
@@ -58,11 +66,11 @@ public class PerformanceMonitor implements IJobEventListener {
 		// : the objective function is minimized energy-costs, thus the level
 		// : should indicate how much % of overall energy we are consuming right
 		// : now
-		// * get the current usage of all the PMs
 
 		setPolicyLevel();
 
 		// Gather all the necessary information
+		// * get the current usage of all the PMs
 		usagePerPM.clear();
 		for (PhysicalMachine pm : cluster.getRunningMachines()) {
 			usagePerPM.put(pm.getId(), pm.getUsedResources());
@@ -100,6 +108,10 @@ public class PerformanceMonitor implements IJobEventListener {
 		// Analyze the gathered Information and see if it can be optimized
 		// : i.e. find a better job/VM/PM-assignment
 
+		// create assignment
+		Assignment currentState = new Assignment(cluster.getRunningMachines(), cluster.getOfflineMachines());
+		Change plan = null;
+		
 		// Decide if action required, i.e. make a plan
 		// we are going to implement a vnd-variant:
 		// * until stopping condition is met
@@ -110,10 +122,42 @@ public class PerformanceMonitor implements IJobEventListener {
 		// *     else neighborhood++
 		// *   until neighborhood_max
 		// * end
+
+		// even simpler for now
+		// try to clear up vms
+		ArrayList<Change> solutions = new ArrayList<Change>();
+		
+		IOperation op = null;
+		
+		try {
+			op = OperationFactory.getInstance().getOperation(OperationType.Redistribute_VM);
+		} catch (OperationNotSupportedException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		solutions.addAll(op.execute(currentState));
+		
+		Collections.sort(solutions);
+		
+		plan = solutions.get(0);
+		
+		execute(plan);
+		
+//		solutions.addAll()
 	}
 
-	private void execute() {
+	private void execute(Change plan) {
 		// Try to execute the the plan
+		
+		for (IOperationStep step : plan.getSteps()) {
+			try {
+				step.execute(plan.getSource());
+			} catch (StepNotReproducableException e) {
+				e.printStackTrace();
+				System.out.println(e.getMessage());
+			}
+		}
 
 		/*
 		 * TODO: things to consider when migrating a job from one virtualmachine

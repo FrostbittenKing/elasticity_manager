@@ -23,11 +23,13 @@ public class SolutionReducer {
 		for (PhysicalMachine PM : PMs) {
 			for (VirtualMachine VM : PM.getVirtualMachines().values()) {
 				if (VM.getRunningJobs().isEmpty()) {
+					// TODO repair
 					PM.removeVM(VM);
 					PM.getVirtualMachines().remove(VM.getId());
 				}
 			}
 			if (PM.getVirtualMachines().isEmpty()) {
+				// TODO repair
 				PM.shutdown();
 			}
 		}

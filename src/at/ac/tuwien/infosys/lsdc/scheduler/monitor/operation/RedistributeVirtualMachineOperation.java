@@ -27,7 +27,7 @@ public class RedistributeVirtualMachineOperation implements IOperation {
 						continue vmLoop;
 					}
 					MoveJobStep step = new MoveJobStep(currentVM, destination, currentJob);
-					step.execute();
+					step.execute(source);
 					newChange.addStep(step);					
 				}
 				solutions.add(newChange);

@@ -152,6 +152,8 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 	}
 
 	public void removeVM(VirtualMachine VM) {
+		
+		VM.stopJobs();
 
 		usedCPUs -= VM.getTotalAvailableCPUs();
 		usedMemory -= VM.getTotalAvailableMemory();
@@ -185,6 +187,19 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 			}
 		}
 		return virtualMachines.isEmpty();
+	}
+
+	public void addVM(VirtualMachine vm) {
+		
+		usedCPUs -= vm.getTotalAvailableCPUs();
+		usedMemory -= vm.getTotalAvailableMemory();
+		usedDiskMemory -= vm.getTotalAvailableDiskMemory();
+		
+		vm.setId(this.createVMId());
+		
+		getVirtualMachines().put(vm.getId(), vm);
+		
+		vm.resumeJobs();
 	}
 	
 //	@Override

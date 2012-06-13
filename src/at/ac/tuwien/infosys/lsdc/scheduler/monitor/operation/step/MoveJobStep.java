@@ -1,10 +1,11 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.Assignment;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 
-public class MoveJobStep extends OperationStep {
+public class MoveJobStep implements IOperationStep {
 	private VirtualMachine source;
 	private VirtualMachine destination;
 	private InsourcedJob movedJob;
@@ -30,7 +31,8 @@ public class MoveJobStep extends OperationStep {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(Assignment currentStates) {
+
 		//TODO use these
 //		source.removeJob(movedJob);
 //		source.addJob(movedJob);
