@@ -8,6 +8,7 @@ import at.ac.tuwien.infosys.lsdc.scheduler.IJobEventListener;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.PolicyLevel;
 import at.ac.tuwien.infosys.lsdc.scheduler.exception.IllegalValueException;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.SolutionReducer;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 
@@ -127,6 +128,6 @@ public class PerformanceMonitor implements IJobEventListener {
 	}
 	
 	private void free_resources() {
-		
+		SolutionReducer.reduce(JobScheduler.getInstance().getCluster());
 	}
 }
