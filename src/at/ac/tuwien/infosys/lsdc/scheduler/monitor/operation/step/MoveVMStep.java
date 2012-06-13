@@ -31,6 +31,9 @@ public class MoveVMStep extends OperationStep {
 
 	@Override
 	public void execute() {
+		// TODO use these
+		// source.removeVM(movedVirtualMachine)
+		// destination.addVM(movedVirtualMachine)
 		movedVirtualMachine.stopJobs();
 		source.getVirtualMachines().remove(movedVirtualMachine.getId());
 		destination.getVirtualMachines().put(movedVirtualMachine.getId(), movedVirtualMachine);
