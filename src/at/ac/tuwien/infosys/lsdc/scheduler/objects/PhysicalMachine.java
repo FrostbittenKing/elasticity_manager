@@ -1,10 +1,14 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.objects;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
+import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 
 
 public class PhysicalMachine extends Machine implements IResourceInformation, Cloneable{
@@ -143,6 +147,24 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 		
 		clonedMachine.setVirtualMachines((HashMap<Integer, VirtualMachine>)virtualMachines.clone());		
 		return clonedMachine;
+	}
+
+	public void removeVM(VirtualMachine VM) {
+
+		usedCPUs -= VM.getTotalAvailableCPUs();
+		usedMemory -= VM.getTotalAvailableMemory();
+		usedDiskMemory -= VM.getTotalAvailableDiskMemory();
+		
+		virtualMachines.remove(VM.getId());
+	}
+
+	public void shutdown() {
+		CloudCluster cluster = JobScheduler.getInstance().getCluster();
+		
+		List<PhysicalMachine> runningPMs = Arrays.asList(cluster.getRunningMachines());
+		List<PhysicalMachine> stoppedPMs = Arrays.asList(cluster.getRunningMachines());
+		runningPMs.remove(this);
+		stoppedPMs.add(this);
 	}
 	
 //	@Override

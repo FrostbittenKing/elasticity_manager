@@ -3,8 +3,6 @@ package at.ac.tuwien.infosys.lsdc.scheduler;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import sun.misc.PerformanceLogger;
-
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;

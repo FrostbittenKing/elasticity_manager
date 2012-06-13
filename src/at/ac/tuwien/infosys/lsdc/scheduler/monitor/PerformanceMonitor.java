@@ -30,12 +30,14 @@ public class PerformanceMonitor implements IJobEventListener {
 
 	@Override
 	public void jobCompleted(InsourcedJob job) {
+		free_resources();
 		monitor();
 
 	}
 
 	@Override
 	public void jobAdded(InsourcedJob job) {
+		free_resources();
 		monitor();
 	}
 
@@ -90,7 +92,7 @@ public class PerformanceMonitor implements IJobEventListener {
 	private void analyze() {
 		// Analyze the gathered Information and see if it can be optimized
 		// : i.e. find a better job/VM/PM-assignment
-
+	
 		// Decide if action required, i.e. make a plan
 		// we are going to implement a vnd-variant:
 		// * until stopping condition is met
@@ -122,5 +124,9 @@ public class PerformanceMonitor implements IJobEventListener {
 		 * machine needs to be checked if it runs any other virtual machines -
 		 * if not, the physicalmachine needs to be shut down
 		 */
+	}
+	
+	private void free_resources() {
+		
 	}
 }

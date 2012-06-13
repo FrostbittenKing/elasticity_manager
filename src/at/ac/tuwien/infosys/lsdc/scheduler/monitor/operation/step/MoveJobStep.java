@@ -31,6 +31,9 @@ public class MoveJobStep extends OperationStep {
 
 	@Override
 	public void execute() {
+		//TODO use these
+//		source.removeJob(movedJob);
+//		source.addJob(movedJob);
 		source.getRunningJobs().remove(movedJob);
 		destination.getRunningJobs().put(movedJob, new Thread(movedJob));
 	}
