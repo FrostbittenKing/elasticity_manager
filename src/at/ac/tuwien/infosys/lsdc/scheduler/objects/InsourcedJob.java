@@ -30,13 +30,16 @@ public class InsourcedJob extends Job implements Cloneable{
 				return;
 			}
 		}
-
+		
 		if (cloudListener != null){
 			cloudListener.jobCompleted(this);
 		}
 		if (monitorListener != null){
 			monitorListener.jobCompleted(this);
 		}
+		
+		System.out.println("Insourced job finished: " + this.toString());
+		System.out.println("Removed myself from VM, remaining jobs running in VM: " + currentVirtualMachineEnvironment.getRunningJobs().size());
 	}
 
 	public void setCloudListener(IJobEventListener cloudListener) {
@@ -47,13 +50,8 @@ public class InsourcedJob extends Job implements Cloneable{
 		this.monitorListener = monitorListener;
 	}
 	
-	@Override
-	public String toString() {
-		return "Job [size=" + consumedDiskMemory + ", consumedMemory=" + consumedMemory
-		+ ", consumedCPUs=" + consumedCPUs + ", executionTime="
-		+ remainingExecutionTime + "]";
-	}
-
+	
+	
 	public void setCurrentVirtualMachineEnvironment(
 			VirtualMachine currentVirtualMachineEnvironment) {
 		this.currentVirtualMachineEnvironment = currentVirtualMachineEnvironment;
@@ -87,6 +85,14 @@ public class InsourcedJob extends Job implements Cloneable{
 		
 		return super.clone();
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "InsourcedJob [currentVirtualMachineEnvironment="
+				+ currentVirtualMachineEnvironment + ", consumedDiskMemory="
+				+ consumedDiskMemory + ", consumedMemory=" + consumedMemory
+				+ ", consumedCPUs=" + consumedCPUs
+				+ ", remainingExecutionTime=" + remainingExecutionTime
+				+ ", lastStartTime=" + lastStartTime + "]";
+	}	
 }

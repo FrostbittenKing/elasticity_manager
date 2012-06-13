@@ -6,8 +6,8 @@ public class MultiNumber {
 	public static Number add(Number x,Number y) {
 		if (x.getClass() == Integer.class)
 			return x.intValue() + y.intValue();
-		else if (x.getClass() == Double.class)
-			return x.doubleValue() + y.doubleValue();
+		else if (x.getClass() == Double.class) {
+			return x.doubleValue() + y.doubleValue(); }
 		else if (x.getClass() == Float.class)
 			return x.floatValue() + y.floatValue();
 		else if (x.getClass() == Long.class)

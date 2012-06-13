@@ -2,7 +2,6 @@ package at.ac.tuwien.infosys.lsdc.simulation;
 
 import java.util.Timer;
 
-import at.ac.tuwien.infosys.lsdc.cloud.cluster.LocalCloudClusterFactory;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.simulation.config.SimulationParameters;
