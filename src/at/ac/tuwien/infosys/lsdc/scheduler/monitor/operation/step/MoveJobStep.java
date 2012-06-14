@@ -34,10 +34,10 @@ public class MoveJobStep implements IOperationStep {
 	public void execute(Assignment currentStates) {
 
 		//TODO use these
-//		source.removeJob(movedJob);
-//		source.addJob(movedJob);
-		source.getRunningJobs().remove(movedJob);
-		destination.getRunningJobs().put(movedJob, new Thread(movedJob));
+		source.removeJob(movedJob);
+		source.addJob(movedJob);
+//		source.getRunningJobs().remove(movedJob);
+//		destination.getRunningJobs().put(movedJob, new Thread(movedJob));
 	}
 
 	@Override
