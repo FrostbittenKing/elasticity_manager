@@ -3,6 +3,7 @@ package at.ac.tuwien.infosys.lsdc.scheduler.monitor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
@@ -100,7 +101,7 @@ public class PerformanceMonitor implements IJobEventListener {
 					PolicyLevel.getAccordingPolicyLevel(usagePercent));
 			System.out.println("SETTING POLICY LEVEL TO: "
 					+ PolicyLevel.getAccordingPolicyLevel(usagePercent)
-							.toString());
+					.toString());
 		} catch (IllegalValueException e) {
 			e.printStackTrace();
 		}
@@ -127,31 +128,30 @@ public class PerformanceMonitor implements IJobEventListener {
 			return;
 		}
 
-		moveJobsolutions.addAll(redistributeJobOperation.execute(currentState));
+		List<Change> intermediateSol = new ArrayList<Change>();
 
-		ArrayList<Change> intermediateSol = new ArrayList<Change>();
+		// moveJobsolutions.addAll(redistributeJobOperation.execute(currentState));
+		intermediateSol.addAll(redistributeJobOperation.execute(currentState));
+		intermediateSol.addAll(redistributeVMOperation.execute(currentState));
 
-		for (int i = 0; i < 25; i++) {
-
-			for (Change currentSolution : moveJobsolutions) {
-				moveVMsolutions.addAll(redistributeVMOperation
+		for (int i = 0; i < 100; i++) {
+			for (Change currentSolution : intermediateSol) {
+				intermediateSol.addAll(redistributeJobOperation
 						.execute(currentSolution.getDestination()));
 			}
 
-			for (Change currentSolution : moveJobsolutions) {
-				moveVMsolutions.addAll(redistributeVMOperation
+			for (Change currentSolution : intermediateSol) {
+				intermediateSol.addAll(redistributeVMOperation
 						.execute(currentSolution.getDestination()));
 			}
-
-			intermediateSol.addAll(moveVMsolutions);
 		}
 
-		finalSolutionList.addAll(moveJobsolutions);
-		finalSolutionList.addAll(moveVMsolutions);
+		if (intermediateSol.size() > 0)
+			System.out.println("=== SIZE: " + intermediateSol.size());
 
-		Collections.sort(finalSolutionList);
-		if (finalSolutionList.size() > 0) {
-			execute(finalSolutionList.get(0));
+		Collections.sort(intermediateSol);
+		if (intermediateSol.size() > 0) {
+			execute(intermediateSol.get(0));
 		}
 	}
 
