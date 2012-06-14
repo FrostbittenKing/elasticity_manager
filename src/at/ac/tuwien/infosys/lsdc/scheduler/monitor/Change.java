@@ -36,6 +36,10 @@ public class Change implements Comparable<Change>{
 		return destination.compareTo(other.destination);
 
 	}
+
+	public void setSource(Assignment source) {
+		this.source = source;
+	}
 	
 	
 }

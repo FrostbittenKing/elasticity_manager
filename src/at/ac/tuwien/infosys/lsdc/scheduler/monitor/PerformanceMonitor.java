@@ -131,7 +131,7 @@ public class PerformanceMonitor implements IJobEventListener {
 		intermediateSol.addAll(redistributeJobOperation.execute(currentState));
 //		intermediateSol.addAll(redistributeVMOperation.execute(currentState));
 
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 2000; i++) {
 			for (Change currentSolution : intermediateSol) {
 				intermediateSol2.addAll(redistributeJobOperation
 						.execute(currentSolution.getDestination()));
@@ -143,7 +143,7 @@ public class PerformanceMonitor implements IJobEventListener {
 //			}
 			if (intermediateSol2.size() > 0) {
 				intermediateSol.clear();
-				intermediateSol.addAll(intermediateSol2.subList(0, (intermediateSol2.size() < 20 ? intermediateSol2.size() : 5)));
+				intermediateSol.addAll(intermediateSol2);
 			} else {
 				break;
 			}
@@ -151,7 +151,11 @@ public class PerformanceMonitor implements IJobEventListener {
 
 		Collections.sort(intermediateSol);
 		if (intermediateSol.size() > 0) {
-			execute(intermediateSol.get(0));
+			Change action = intermediateSol.get(0);
+			
+			action.setSource(currentState); 
+			
+			execute(action);
 		}
 	}
 
