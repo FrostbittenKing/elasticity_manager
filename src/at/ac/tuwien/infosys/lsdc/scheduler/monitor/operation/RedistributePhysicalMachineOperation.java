@@ -15,31 +15,28 @@ public class RedistributePhysicalMachineOperation implements IOperation {
 	@Override
 	public ArrayList<Change> execute(Assignment source) {
 		ArrayList<Change> solutions = new ArrayList<Change>();
-		
+
 		pmLoop: for (int i = 0; i < source.getRunningPhysicalMachines().length; i++){
 			PhysicalMachine[] PMs = source.getRunningPhysicalMachines().clone();
 			Change change = new Change(source, new Assignment(PMs, source.getStoppedPhysicalMachines().clone()));
-			
-			for(VirtualMachine currentVM : PMs[i].getVirtualMachines().values()){
+
+			VirtualMachine[] currentPMVMs = PMs[i].getVirtualMachines().values().toArray(new VirtualMachine[0]);
+			for(int j = 0; j < currentPMVMs.length; j++){
 				BestFit<PhysicalMachine> bestFit = new BestFit<PhysicalMachine>(PMs);
-				
-				PhysicalMachine target = (PhysicalMachine) bestFit.getBestFittingMachine(currentVM);
+
+				PhysicalMachine target = (PhysicalMachine) bestFit.getBestFittingMachine(currentPMVMs[j]);
 				if (target == null)
 					continue pmLoop;
-				
-				MoveVMStep step = new MoveVMStep(PMs[i], target, currentVM);
-				try {
-					step.execute(source);
-				} catch (StepNotReproducableException e) {
-					e.printStackTrace();
-				}
+
+				MoveVMStep step = new MoveVMStep(PMs[i], target, currentPMVMs[j]);
+				step.execute(source);
 				change.addStep(step);
-				
+
 			}
 			solutions.add(change);
 		}
 		SolutionReducer.reduce(solutions);
-		
+
 		return solutions;
 	}
 

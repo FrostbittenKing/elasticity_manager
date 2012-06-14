@@ -32,36 +32,9 @@ public class MoveVMStep implements IOperationStep {
 	}
 
 	@Override
-	public void execute(Assignment currentState) throws StepNotReproducableException {
-		/*
-		 * get actual source pm from currentstate by comparing ids
-		 * get actual destination pm the same way
-		 * get actual virtual machine by comparing ids from source pm member vms
-		 * then move the vm
-		 */
-		PhysicalMachine realSource = null;
-		PhysicalMachine realDestination = null;
-		
-		for (PhysicalMachine pm : currentState.getRunningPhysicalMachines()) {
-			if (pm.getId() == source.getId()) {
-				realSource = pm;
-			}
-			if (pm.getId() == destination.getId()) {
-				realDestination = pm;
-			}
-		}
-		
-		if (realDestination == null || realSource == null) {
-			throw new StepNotReproducableException();
-		}
-		
-		// TODO use these
+	public void execute(Assignment currentState){
 		source.removeVM(movedVirtualMachine);
 		destination.addVM(movedVirtualMachine);
-//		movedVirtualMachine.stopJobs();
-//		source.getVirtualMachines().remove(movedVirtualMachine.getId());
-//		destination.getVirtualMachines().put(movedVirtualMachine.getId(), movedVirtualMachine);
-//		movedVirtualMachine.resumeJobs();
 	}
 
 	@Override
