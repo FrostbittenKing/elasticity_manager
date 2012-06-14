@@ -121,9 +121,13 @@ public class PerformanceMonitor implements IJobEventListener {
 			e.printStackTrace();
 			return;
 		}
-		
-		
 		moveJobsolutions.addAll(redistributeJobOperation.execute(currentState));
+		
+		for (int i = 0 ; i < 10; i++) {
+			for (Change currentSolution : moveJobsolutions) {
+				moveJobsolutions.addAll(redistributeJobOperation.execute(currentSolution.getDestination()));
+			}
+		}
 		
 		for (Change currentSolution : moveJobsolutions){
 			moveVMsolutions.addAll(redistributeVMOperation.execute(currentSolution.getDestination()));
