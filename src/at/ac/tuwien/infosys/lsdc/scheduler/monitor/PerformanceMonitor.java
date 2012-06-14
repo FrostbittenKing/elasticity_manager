@@ -111,10 +111,6 @@ public class PerformanceMonitor implements IJobEventListener {
 		Assignment currentState = new Assignment(cluster.getRunningMachines(),
 				cluster.getOfflineMachines());
 
-		ArrayList<Change> finalSolutionList = new ArrayList<Change>();
-		ArrayList<Change> moveJobsolutions = new ArrayList<Change>();
-		ArrayList<Change> moveVMsolutions = new ArrayList<Change>();
-
 		IOperation redistributeJobOperation = null;
 		IOperation redistributeVMOperation = null;
 
@@ -129,21 +125,25 @@ public class PerformanceMonitor implements IJobEventListener {
 		}
 
 		List<Change> intermediateSol = new ArrayList<Change>();
+		List<Change> intermediateSol2 = new ArrayList<Change>();
 
-		// moveJobsolutions.addAll(redistributeJobOperation.execute(currentState));
+
 		intermediateSol.addAll(redistributeJobOperation.execute(currentState));
 		intermediateSol.addAll(redistributeVMOperation.execute(currentState));
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 3; i++) {
 			for (Change currentSolution : intermediateSol) {
-				intermediateSol.addAll(redistributeJobOperation
+				intermediateSol2.addAll(redistributeJobOperation
 						.execute(currentSolution.getDestination()));
 			}
 
 			for (Change currentSolution : intermediateSol) {
-				intermediateSol.addAll(redistributeVMOperation
+				intermediateSol2.addAll(redistributeVMOperation
 						.execute(currentSolution.getDestination()));
 			}
+			if (intermediateSol2.size() > 0)
+				intermediateSol.clear();
+				intermediateSol.addAll(intermediateSol2.subList(0, (intermediateSol2.size() < 5 ? intermediateSol2.size() : 5)));
 		}
 
 		if (intermediateSol.size() > 0)
