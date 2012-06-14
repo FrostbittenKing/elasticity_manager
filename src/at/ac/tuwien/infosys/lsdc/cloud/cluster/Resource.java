@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.lsdc.cloud.cluster;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 
 public class Resource {
 	private Integer[] resources;
@@ -24,6 +25,12 @@ public class Resource {
 		resources[ResourceType.CPU()] += job.getConsumedCPUs();
 		resources[ResourceType.MEMORY()] += job.getConsumedMemory();
 		resources[ResourceType.DISKMEMORY()] += job.getConsumedDiskMemory();
+	}
+	
+	public void addVirtualMachine(VirtualMachine machine) {
+		resources[ResourceType.CPU()] += machine.getTotalAvailableCPUs();
+		resources[ResourceType.MEMORY()] += machine.getTotalAvailableMemory();
+		resources[ResourceType.DISKMEMORY()] += machine.getTotalAvailableDiskMemory();
 	}
 
 	public enum ResourceType {

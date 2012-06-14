@@ -160,7 +160,7 @@ public class PerformanceMonitor implements IJobEventListener {
 		}
 
 		/*
-		 * TODO: things to consider when migrating a job from one virtualmachine
+		 * TODO things to consider when migrating a job from one virtualmachine
 		 * to another: -
 		 * Job.addCosts(JobScheduler.getInstance().getJobMigrationCost()) needs
 		 * to be called - the virtual machine that the job was taken from needs

@@ -1,6 +1,7 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.Assignment;
@@ -16,12 +17,14 @@ public class RedistributeVirtualMachineOperation implements IOperation {
 	public ArrayList<Change> execute(Assignment source) {
 		ArrayList<Change> solutions = new ArrayList<Change>();
 		
-		for (int i = 0; i < source.getRunningPhysicalMachines().length; i++){
-			PhysicalMachine[] machines = source.getRunningPhysicalMachines().clone();
-			vmLoop: for(VirtualMachine currentVM : machines[i].getVirtualMachines().values()){
+		PhysicalMachine[] runningPhysicalMachines = source.getRunningPhysicalMachines();
+		for (int i = 0; i < runningPhysicalMachines.length; i++){
+			PhysicalMachine[] machines = runningPhysicalMachines.clone();
+			Map<Integer, VirtualMachine> virtualMachines = machines[i].getVirtualMachines();
+			vmLoop: for(VirtualMachine currentVM : virtualMachines.values()){
 				Change newChange = new Change(source, new Assignment(machines, source.getStoppedPhysicalMachines().clone()));
 				for(InsourcedJob currentJob : currentVM.getRunningJobs().keySet()){
-					BestFit<VirtualMachine> bestFit = new BestFit<VirtualMachine>(machines[i].getVirtualMachines().values().toArray(new VirtualMachine[0]));
+					BestFit<VirtualMachine> bestFit = new BestFit<VirtualMachine>(virtualMachines.values().toArray(new VirtualMachine[0]));
 					VirtualMachine destination = (VirtualMachine)bestFit.getBestFittingMachineIgnoreCurrent(currentJob);
 					if (destination == null){
 						continue vmLoop;

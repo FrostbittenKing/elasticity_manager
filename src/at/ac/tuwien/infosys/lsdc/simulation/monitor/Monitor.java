@@ -42,8 +42,7 @@ public class Monitor extends TimerTask{
 		} catch (StatisticsWriterException e) {
 			System.err.println(e.getMessage());
 		}
-		//TODO
-		// plotting usage/machine -- HISTOGRAM y: %, x: machines
+		//TODO plotting usage/machine -- HISTOGRAM y: %, x: machines
 		// total costs of all machines over timey: sum costs, x: time
 	}
 	

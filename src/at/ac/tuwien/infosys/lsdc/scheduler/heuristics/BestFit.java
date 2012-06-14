@@ -1,25 +1,31 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.heuristics;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.IResourceInformation;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
 import at.ac.tuwien.infosys.lsdc.scheduler.matrix.Matrix;
 import at.ac.tuwien.infosys.lsdc.scheduler.matrix.twoDimensional.MatrixHelper;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.Machine;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 
 
 public class BestFit<T extends IResourceInformation> {
 	
 	private static final Integer NUMBER_OF_ATTRIBUTES = 3;
 	
-	T[] machines = null;
+	ArrayList<T> machines = null;
 	
 	public BestFit(T[] machines) {
-		this.machines = machines;
+		this.machines = new ArrayList<T>(Arrays.asList(machines));
 	}
 	
 	public void setRunningMachines(T[] machines) {
-		this.machines = machines;
+		this.machines = new ArrayList<T>(Arrays.asList(machines));
 	}
 	
 	/**
@@ -31,7 +37,7 @@ public class BestFit<T extends IResourceInformation> {
 	 */
 	public Machine getBestFittingMachine(InsourcedJob job) {
 		
-		int nrOfMachines = machines.length;
+		int nrOfMachines = machines.size();
 		Resource [] currentUsedResources = new Resource[nrOfMachines];
 		Resource [] totalResources = new Resource[nrOfMachines];
 		LoadMatrix loadMatrix = new LoadMatrix(NUMBER_OF_ATTRIBUTES, nrOfMachines);
@@ -50,12 +56,51 @@ public class BestFit<T extends IResourceInformation> {
 			allAvailable.addResource(totalResources[machinecount]);
 			machinecount++;
 		}
+		return getBusiestMachine(nrOfMachines, loadMatrix, allAvailable);
+	}
+	
+	/**
+	 * returns the best physical machine, the virtual machine @param machine should be moved to
+	 * @param machine the virtual machine to be moved
+	 * @return the physical machine, the vm should be put into
+	 */
+	public Machine getBestFittingMachine(Machine machine){
+		PhysicalMachine pmIdToIgnore = ((VirtualMachine)machine).getHost();
+		machines.remove(pmIdToIgnore);
+		
+		int nrOfMachines = machines.size();
+		Resource [] currentUsedResources = new Resource[nrOfMachines];
+		Resource [] totalResources = new Resource[nrOfMachines];
+		int machinecount = 0;
+		Resource currentResource;
+		LoadMatrix loadMatrix = new LoadMatrix(NUMBER_OF_ATTRIBUTES, nrOfMachines);
+		LoadMatrix allAvailable = new LoadMatrix(NUMBER_OF_ATTRIBUTES, nrOfMachines);
+		for (T currentMachine : machines) {
+			currentResource = currentMachine.getUsedResources();
+			currentResource.addVirtualMachine((VirtualMachine)machine);
+			currentUsedResources[machinecount] = currentResource;
+			totalResources[machinecount] = currentMachine.getTotalResources();
+			
+			loadMatrix.addResource(currentResource);
+			allAvailable.addResource(totalResources[machinecount]);
+			machinecount++;
+		}
+		return getBusiestMachine(nrOfMachines, loadMatrix, allAvailable);
+	}
+	
+	public Machine getBestFittingMachineIgnoreCurrent(InsourcedJob job){
+		VirtualMachine vmToIgnore = job.getCurrentVirtualMachineEnvironment();
+		machines.remove(vmToIgnore);
+		return getBestFittingMachine(job);
+	}
+
+	private Machine getBusiestMachine(int nrOfMachines, LoadMatrix loadMatrix,
+			LoadMatrix allAvailable) {
 		loadMatrix.divElement(allAvailable);
 		Matrix<Double> rowMeans = MatrixHelper.calculateRowMean(loadMatrix);
 	
 		if (nrOfMachines == 1) {
-			return (Machine)machines[0];
-			//return totalResources[0].getId();
+			return (Machine)machines.get(0);
 		}
 		
 		//Integer currentBestMachine = totalResources[0].getId();
@@ -71,23 +116,6 @@ public class BestFit<T extends IResourceInformation> {
 			}
 		}
 		
-		return (Machine)machines[currentBestMachinePosition];
-		//return totalResources[currentBestMachinePosition].getId();
-	}
-	
-	public Machine getBestFittingMachine(Machine machine){
-		/* TODO:
-		 * find the best fitting physical machine for @param machine, ignoring the 
-		 * physical machine as destination that @param machine is currently assigned to 
-		 */
-		return null;
-	}
-	
-	public Machine getBestFittingMachineIgnoreCurrent(InsourcedJob job){
-		/* TODO:
-		 * find the best fitting virtual machine for @param job, ignoring the
-		 * virtual machine as destination that @param job is currently assigned to
-		 */
-		return null;
+		return (Machine)(machines.get(currentBestMachinePosition));
 	}
 }
