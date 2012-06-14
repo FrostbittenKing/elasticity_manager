@@ -1,24 +1,29 @@
 {
 "minCPUCount":1,
 "maxCPUCount":"4",
-"minMemorySize":"1024",
-"maxMemorySize":"4098",
-"minDiskSize":"1",
-"maxDiskSize":"10240",
+"minMemorySize":"512",
+"maxMemorySize":"2048",
+"minDiskSize":"512",
+"maxDiskSize":"5192",
 "minExecutionTime":"10000",
 "maxExecutionTime":"25000",
-"numberOfJobs":"20",
-"jobSchedulingDelay":"1000",
+"numberOfJobs":"30",
+"jobSchedulingDelay":"500",
 "jobMigrationCost":"0.0",
 "virtualMachineMigrationCost":"0.0",
 "physicalMachineBootCost":"0.0",
 "outSourceCostsPerCycle":"500",
 "physicalMachines":
 	[
-		{"CPUs":8, "memory":10000, "diskMemory":100000, "pricePerCycle":80},
-		{"CPUs":3, "memory":20000, "diskMemory":200000, "pricePerCycle":30},
-		{"CPUs":7, "memory":30000, "diskMemory":300000, "pricePerCycle":70},
-		{"CPUs":10, "memory":40000, "diskMemory":400000, "pricePerCycle":150},
-		{"CPUs":4, "memory":50000, "diskMemory":500000, "pricePerCycle":20}
+		{"CPUs":24, "memory":30000, "diskMemory":10000, "pricePerCycle":80},
+		{"CPUs":12, "memory":15000, "diskMemory":20000, "pricePerCycle":30},
+		{"CPUs":8, "memory":10000, "diskMemory":30000, "pricePerCycle":70},
+		{"CPUs":30, "memory":35000, "diskMemory":40000, "pricePerCycle":150},
+		{"CPUs":14, "memory":20000, "diskMemory":50000, "pricePerCycle":20},
+		{"CPUs":28, "memory":10000, "diskMemory":10000, "pricePerCycle":80},
+		{"CPUs":17, "memory":20000, "diskMemory":20000, "pricePerCycle":30},
+		{"CPUs":22, "memory":30000, "diskMemory":30000, "pricePerCycle":70},
+		{"CPUs":20, "memory":40000, "diskMemory":40000, "pricePerCycle":150},
+		{"CPUs":41, "memory":32000, "diskMemory":50000, "pricePerCycle":20}
 	]
 }

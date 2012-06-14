@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TimerTask;
 
+import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource.ResourceType;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.GnuPlotOutputDataConverter;
@@ -33,12 +34,14 @@ public class Monitor extends TimerTask{
 		*/
 		Double costs = getRelativeCosts();
 		Double relativeUsage = getRelativePMUsage();
-		
+		Double relativeCPUUsage = getRelativeCPUUsage();
+		Double relativeMemUsage = getRelativeMemUsage();
+		Double relativeDiskUsage = getRelativeDiskUsage();
 		IStatisticsOutputWriter outputFormatter = new GnuPlotStatisticsOutputFormatter(fileName);
 		try {
 			String[][] writerInput = GnuPlotOutputDataConverter.doubleInput(
 					new Double[][]{
-							new Double[]{new Double(timeIndex),costs,relativeUsage}
+							new Double[]{new Double(timeIndex),costs,relativeUsage, relativeCPUUsage, relativeMemUsage, relativeDiskUsage}
 							});
 			outputFormatter.writeDataToFile(
 					writerInput, OutputMode.APPEND);
@@ -46,6 +49,42 @@ public class Monitor extends TimerTask{
 		} catch (StatisticsWriterException e) {
 			System.err.println(e.getMessage());
 		}
+	}
+	
+	private Double getRelativeCPUUsage() {
+		PhysicalMachine[] runningMachines = JobScheduler.getInstance().getCluster().getRunningMachines();
+		Double usedCPUs = 0.0;
+		Double totalCPUs = 0.0;
+		for (PhysicalMachine currentMachine : runningMachines) {
+			usedCPUs += currentMachine.getUsedResources().getResources()[0];
+			totalCPUs += currentMachine.getCPUs();
+		}
+		
+		return (totalCPUs >0 ? usedCPUs / totalCPUs : 0.0);
+	}
+	
+	private Double getRelativeMemUsage() {
+		PhysicalMachine[] runningMachines = JobScheduler.getInstance().getCluster().getRunningMachines();
+		Double usedMem = 0.0;
+		Double totalMem = 0.0;
+		for (PhysicalMachine currentMachine : runningMachines) {
+			usedMem += currentMachine.getUsedResources().getResources()[1];
+			totalMem += currentMachine.getMemory();
+		}
+		
+		return (totalMem > 0 ? usedMem / totalMem : 0.0);
+	}
+	
+	private Double getRelativeDiskUsage() {
+		PhysicalMachine[] runningMachines = JobScheduler.getInstance().getCluster().getRunningMachines();
+		Double usedDiskMem = 0.0;
+		Double totalDiskMem = 0.0;
+		for (PhysicalMachine currentMachine : runningMachines) {
+			usedDiskMem += currentMachine.getUsedResources().getResources()[2];
+			totalDiskMem += currentMachine.getDiskMemory();
+		}
+		
+		return (totalDiskMem > 0 ? usedDiskMem / totalDiskMem : 0.0);
 	}
 	
 	private Double getRelativeCosts() {
