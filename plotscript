@@ -9,7 +9,7 @@ min=1e38
 set title 'total costs plot'
 set xlabel 'time in sec'
 set ylabel 'percent'
-set xrange [0:60]
+set xrange [0:120]
 set yrange [0:1.2]
 set xtics 0,1
 set ytics 0,0.1
