@@ -54,7 +54,9 @@ public class VirtualMachine extends Machine implements IResourceInformation, Clo
 	
 	public void stopJobs(){
 		for (Thread currentJobThread : runningJobThreads.values()){
-			currentJobThread.interrupt();
+			if (currentJobThread != null){
+				currentJobThread.interrupt();
+			}
 		}
 	}
 	
@@ -102,6 +104,9 @@ public class VirtualMachine extends Machine implements IResourceInformation, Clo
 		currentUsedTotalCPUs -= job.getConsumedCPUs();
 		currentUsedTotalDiskMemory -= job.getConsumedDiskMemory();
 		currentUsedTotalMemory -= job.getConsumedMemory();
+		if (runningJobThreads.get(job) != null){
+			runningJobThreads.get(job).interrupt();
+		}
 		runningJobThreads.remove(job);
 	}
 
