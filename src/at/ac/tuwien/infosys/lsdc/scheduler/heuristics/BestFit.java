@@ -35,8 +35,11 @@ public class BestFit<T extends IResourceInformation> {
 	 * @return the id of the machine
 	 */
 	public Machine getBestFittingMachine(InsourcedJob job) {
-
+		
 		int nrOfMachines = machines.size();
+		if (nrOfMachines == 0) {
+			return null;
+		}
 		Resource [] currentUsedResources = new Resource[nrOfMachines];
 		Resource [] totalResources = new Resource[nrOfMachines];
 		LoadMatrix loadMatrix = new LoadMatrix(NUMBER_OF_ATTRIBUTES, nrOfMachines);
