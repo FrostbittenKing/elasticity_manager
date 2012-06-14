@@ -32,17 +32,12 @@ public class MoveJobStep implements IOperationStep {
 
 	@Override
 	public void execute(Assignment currentStates) {
-
-		//TODO use these
 		source.removeJob(movedJob);
 		destination.addJob(movedJob);
-//		source.getRunningJobs().remove(movedJob);
-//		destination.getRunningJobs().put(movedJob, new Thread(movedJob));
 	}
 
 	@Override
-	public double getCosts() {
-		
+	public double getCosts() {		
 		Double totalPricePerCycle = (double) source.getHost().getPricePerCycle() + destination.getHost().getPricePerCycle();
 		
 		Double pricePMPerAttr = (double) totalPricePerCycle / (double) 3;

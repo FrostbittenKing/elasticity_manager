@@ -105,48 +105,40 @@ public class PerformanceMonitor implements IJobEventListener {
 	}
 
 	private void analyze() {
-		// Analyze the gathered Information and see if it can be optimized
-		// : i.e. find a better job/VM/PM-assignment
-
-		// create assignment
 		Assignment currentState = new Assignment(cluster.getRunningMachines(), cluster.getOfflineMachines());
-		Change plan = null;
 		
-		// Decide if action required, i.e. make a plan
-		// we are going to implement a vnd-variant:
-		// * until stopping condition is met
-		// *   iterate through neighborhoods
-		// *     (generate (random) solution y by applying change-op)
-		// *     find local minimum of y: y'
-		// *     if y' better than initial solution, assign as new starting point and reset neighborhood-cnt
-		// *     else neighborhood++
-		// *   until neighborhood_max
-		// * end
-
-		// even simpler for now
-		// try to clear up vms
-		ArrayList<Change> solutions = new ArrayList<Change>();
+		ArrayList<Change> finalSolutionList = new ArrayList<Change>();
+		ArrayList<Change> moveJobsolutions = new ArrayList<Change>();
+		ArrayList<Change> moveVMsolutions = new ArrayList<Change>();
 		
-		IOperation op = null;
+		IOperation redistributeJobOperation = null;
+		IOperation redistributeVMOperation = null;
 		
 		try {
-			op = OperationFactory.getInstance().getOperation(OperationType.Redistribute_VM);
+			redistributeJobOperation = OperationFactory.getInstance().getOperation(OperationType.Redistribute_VM);
+			redistributeVMOperation = OperationFactory.getInstance().getOperation(OperationType.Redistribute_PM);
 		} catch (OperationNotSupportedException e) {
 			e.printStackTrace();
 			return;
 		}
 		
-		solutions.addAll(op.execute(currentState));
 		
-		Collections.sort(solutions);
-		if (solutions.size() > 0) {
-			execute(solutions.get(0));
+		moveJobsolutions.addAll(redistributeJobOperation.execute(currentState));
+		
+		for (Change currentSolution : moveJobsolutions){
+			moveVMsolutions.addAll(redistributeVMOperation.execute(currentSolution.getDestination()));
+		}
+		
+		finalSolutionList.addAll(moveJobsolutions);
+		finalSolutionList.addAll(moveVMsolutions);
+		
+		Collections.sort(finalSolutionList);
+		if (finalSolutionList.size() > 0) {
+			execute(finalSolutionList.get(0));
 		}
 	}
 
 	private void execute(Change plan) {
-		// Try to execute the the plan
-		
 		for (IOperationStep step : plan.getSteps()) {
 			try {
 				step.execute(plan.getSource());
@@ -155,23 +147,6 @@ public class PerformanceMonitor implements IJobEventListener {
 				System.out.println(e.getMessage());
 			}
 		}
-
-		/*
-		 * TODO things to consider when migrating a job from one virtualmachine
-		 * to another: -
-		 * Job.addCosts(JobScheduler.getInstance().getJobMigrationCost()) needs
-		 * to be called - the virtual machine that the job was taken from needs
-		 * to be checked if it has any other jobs - if not, the virtual machine
-		 * needs to be shut down, furthermore, the physical machine that ran the
-		 * virtual machine needs to be checked if it runs any other virtual
-		 * machines - if not, the physicalmachine needs to be shut down things
-		 * to consider when migrating a virtualmachine from one physicalmachine
-		 * to another: -
-		 * Job.addCosts(JobScheduler.getInstance().getVirtualMachineMigrationCost
-		 * ()) needs to be called - the physical machine that ran the virtual
-		 * machine needs to be checked if it runs any other virtual machines -
-		 * if not, the physicalmachine needs to be shut down
-		 */
 	}
 
 	private void free_resources() {
