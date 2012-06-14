@@ -28,8 +28,8 @@ public class RedistributeVirtualMachineOperation implements IOperation {
 					Change newChange = new Change(source, new Assignment(machines, source.getStoppedPhysicalMachines().clone()));
 					InsourcedJob[] currentVMJobs = currentVM.getRunningJobs().keySet().toArray(new InsourcedJob[0]);
 					for(int j = 0; j < currentVM.getRunningJobs().size(); j++){
-						BestFit<VirtualMachine> bestFit = new BestFit<VirtualMachine>(virtualMachines.values().
-								toArray(new VirtualMachine[virtualMachines.values().size()]));
+						BestFit<VirtualMachine> bestFit = new BestFit<VirtualMachine>(
+								machines[i].getVirtualHostingCandidates(currentVMJobs[j]).toArray(new VirtualMachine[0]));
 						VirtualMachine destination = (VirtualMachine)bestFit.getBestFittingMachineIgnoreCurrent(currentVMJobs[j]);
 						if (destination == null){
 							continue vmLoop;

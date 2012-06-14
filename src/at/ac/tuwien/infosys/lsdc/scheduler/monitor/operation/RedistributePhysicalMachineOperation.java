@@ -22,7 +22,7 @@ public class RedistributePhysicalMachineOperation implements IOperation {
 
 			VirtualMachine[] currentPMVMs = PMs[i].getVirtualMachines().values().toArray(new VirtualMachine[0]);
 			for(int j = 0; j < currentPMVMs.length; j++){
-				BestFit<PhysicalMachine> bestFit = new BestFit<PhysicalMachine>(PMs);
+				BestFit<PhysicalMachine> bestFit = new BestFit<PhysicalMachine>(getFittingPhysicalMachines(PMs, currentPMVMs[j]));
 
 				PhysicalMachine target = (PhysicalMachine) bestFit.getBestFittingMachine(currentPMVMs[j]);
 				if (target == null)
@@ -38,6 +38,16 @@ public class RedistributePhysicalMachineOperation implements IOperation {
 		SolutionReducer.reduce(solutions);
 
 		return solutions;
+	}
+	
+	private PhysicalMachine[] getFittingPhysicalMachines(PhysicalMachine[] machines, VirtualMachine vm){
+		ArrayList<PhysicalMachine> machineCandidates = new ArrayList<PhysicalMachine>();
+		for (int i = 0; i < machines.length; i++){
+			if (machines[i].canHostVirtualMachine(vm)){
+				machineCandidates.add(machines[i]);
+			}
+		}
+		return machineCandidates.toArray(new PhysicalMachine[0]);
 	}
 
 }
