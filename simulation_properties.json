@@ -7,7 +7,7 @@
 "maxDiskSize":"5192",
 "minExecutionTime":"10000",
 "maxExecutionTime":"25000",
-"numberOfJobs":"120",
+"numberOfJobs":"180",
 "jobSchedulingDelay":"250",
 "jobMigrationCost":"0.0",
 "virtualMachineMigrationCost":"0.0",

@@ -32,9 +32,7 @@ public class Change implements Comparable<Change>{
 
 	@Override
 	public int compareTo(Change other) {
-		
 		return destination.compareTo(other.destination);
-
 	}
 
 	public void setSource(Assignment source) {

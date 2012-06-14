@@ -131,7 +131,7 @@ public class PerformanceMonitor implements IJobEventListener {
 		intermediateSol.addAll(redistributeJobOperation.execute(currentState));
 //		intermediateSol.addAll(redistributeVMOperation.execute(currentState));
 
-		for (int i = 0; i < 5000; i++) {
+		for (int i = 0; i < 30000; i++) {
 			for (Change currentSolution : intermediateSol) {
 				intermediateSol2.addAll(redistributeJobOperation
 						.execute(currentSolution.getDestination()));
@@ -151,26 +151,28 @@ public class PerformanceMonitor implements IJobEventListener {
 		Collections.sort(intermediateSol);
 		if (intermediateSol.size() > 0) {
 			Change action = intermediateSol.get(0);
-			
-			action.setSource(currentState); 
-			
-			execute(action);
+			if (action.getDestination().compareTo(currentState) < 0) {
+				
+				action.setSource(currentState); 
+				execute(action);
+			}
 		}
 	}
 
 	private void execute(Change plan) {
-		Assignment foo = new Assignment(JobScheduler.getInstance().getCluster().getRunningMachines(),
-				JobScheduler.getInstance().getCluster().getOfflineMachines());
+		Assignment currentState = new Assignment(cluster.getRunningMachines(),
+				cluster.getOfflineMachines());
 		for (IOperationStep step : plan.getSteps()) {
 			try {
-				step.execute(foo);
-				foo = new Assignment(JobScheduler.getInstance().getCluster().getRunningMachines(),
-						JobScheduler.getInstance().getCluster().getOfflineMachines());
+				step.execute(currentState);
+				currentState = new Assignment(cluster.getRunningMachines(),
+						cluster.getOfflineMachines());
 			} catch (StepNotReproducableException e) {
 				e.printStackTrace();
 				System.out.println(e.getMessage());
 			}
 		}
+		SolutionReducer.reduce(cluster);
 	}
 
 	private void free_resources() {
