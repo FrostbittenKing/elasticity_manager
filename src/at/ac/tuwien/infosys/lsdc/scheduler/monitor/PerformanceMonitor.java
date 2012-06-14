@@ -3,6 +3,7 @@ package at.ac.tuwien.infosys.lsdc.scheduler.monitor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.CloudCluster;
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource;
@@ -100,7 +101,7 @@ public class PerformanceMonitor implements IJobEventListener {
 					PolicyLevel.getAccordingPolicyLevel(usagePercent));
 			System.out.println("SETTING POLICY LEVEL TO: "
 					+ PolicyLevel.getAccordingPolicyLevel(usagePercent)
-							.toString());
+					.toString());
 		} catch (IllegalValueException e) {
 			e.printStackTrace();
 		}
@@ -109,10 +110,6 @@ public class PerformanceMonitor implements IJobEventListener {
 	private void analyze() {
 		Assignment currentState = new Assignment(cluster.getRunningMachines(),
 				cluster.getOfflineMachines());
-
-		ArrayList<Change> finalSolutionList = new ArrayList<Change>();
-		ArrayList<Change> moveJobsolutions = new ArrayList<Change>();
-		ArrayList<Change> moveVMsolutions = new ArrayList<Change>();
 
 		IOperation redistributeJobOperation = null;
 		IOperation redistributeVMOperation = null;
@@ -126,36 +123,56 @@ public class PerformanceMonitor implements IJobEventListener {
 			e.printStackTrace();
 			return;
 		}
-		moveJobsolutions.addAll(redistributeJobOperation.execute(currentState));
-		
-		for (int i = 0 ; i < 10; i++) {
-			for (Change currentSolution : moveJobsolutions) {
-				moveJobsolutions.addAll(redistributeJobOperation.execute(currentSolution.getDestination()));
+
+		List<Change> intermediateSol = new ArrayList<Change>();
+		List<Change> intermediateSol2 = new ArrayList<Change>();
+
+
+		intermediateSol.addAll(redistributeJobOperation.execute(currentState));
+//		intermediateSol.addAll(redistributeVMOperation.execute(currentState));
+
+		for (int i = 0; i < 30000; i++) {
+			for (Change currentSolution : intermediateSol) {
+				intermediateSol2.addAll(redistributeJobOperation
+						.execute(currentSolution.getDestination()));
+			}
+
+//			for (Change currentSolution : intermediateSol) {
+//				intermediateSol2.addAll(redistributeVMOperation
+//						.execute(currentSolution.getDestination()));
+//			}
+			if (intermediateSol2.size() > 0) {
+				intermediateSol.addAll(intermediateSol2);
+			} else {
+				break;
 			}
 		}
-		
-		for (Change currentSolution : moveJobsolutions){
-			moveVMsolutions.addAll(redistributeVMOperation.execute(currentSolution.getDestination()));
-		}
 
-		finalSolutionList.addAll(moveJobsolutions);
-		finalSolutionList.addAll(moveVMsolutions);
-
-		Collections.sort(finalSolutionList);
-		if (finalSolutionList.size() > 0) {
-			execute(finalSolutionList.get(0));
+		Collections.sort(intermediateSol);
+		if (intermediateSol.size() > 0) {
+			Change action = intermediateSol.get(0);
+			if (action.getDestination().compareTo(currentState) < 0) {
+				
+				action.setSource(currentState); 
+				execute(action);
+			}
 		}
 	}
 
 	private void execute(Change plan) {
+		Assignment currentState = new Assignment(cluster.getRunningMachines(),
+				cluster.getOfflineMachines());
 		for (IOperationStep step : plan.getSteps()) {
 			try {
-				step.execute(plan.getSource());
+				step.execute(currentState);
+				currentState = new Assignment(cluster.getRunningMachines(),
+						cluster.getOfflineMachines());
 			} catch (StepNotReproducableException e) {
 				e.printStackTrace();
 				System.out.println(e.getMessage());
 			}
 		}
+		SolutionReducer.reduce(cluster);
 	}
 
 	private void free_resources() {

@@ -47,10 +47,9 @@ public class Assignment implements Comparable<Assignment>{
 		neighborAssignments.add(change);
 	}
 	
-	
-
 	@Override
 	public int compareTo(Assignment o) {
-		return new Integer(runningCosts + migrationCosts).compareTo(o.getRunningCosts() + o.getMigrationCosts());
+//		return new Integer(runningCosts + migrationCosts).compareTo(o.getRunningCosts() + o.getMigrationCosts());
+		return (runningCosts - o.runningCosts);
 	}
 }

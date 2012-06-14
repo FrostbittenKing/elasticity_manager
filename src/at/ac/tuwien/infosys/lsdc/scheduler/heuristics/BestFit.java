@@ -74,6 +74,9 @@ public class BestFit<T extends IResourceInformation> {
 		machines.remove(pmIdToIgnore);
 
 		int nrOfMachines = machines.size();
+		if (nrOfMachines == 0) {
+			return null;
+		}
 		Resource [] currentUsedResources = new Resource[nrOfMachines];
 		Resource [] totalResources = new Resource[nrOfMachines];
 		int machinecount = 0;

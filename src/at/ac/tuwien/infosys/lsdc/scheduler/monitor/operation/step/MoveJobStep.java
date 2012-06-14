@@ -2,7 +2,9 @@ package at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step;
 
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.Assignment;
+import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step.exception.StepNotReproducableException;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
+import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 
 public class MoveJobStep implements IOperationStep {
@@ -31,9 +33,32 @@ public class MoveJobStep implements IOperationStep {
 	}
 
 	@Override
-	public void execute(Assignment currentStates) {
+	public void execute() {
 		source.removeJob(movedJob);
 		destination.addJob(movedJob);
+	}
+	
+	@Override
+	public void execute(Assignment currentState) throws StepNotReproducableException {
+		
+		VirtualMachine realSource = null;
+		VirtualMachine realDestination = null;
+		
+		for (PhysicalMachine pm : currentState.getRunningPhysicalMachines()) {
+			for (VirtualMachine vm : pm.getVirtualMachines().values()) {
+				if (realSource.getId() == vm.getId())
+					realSource = vm;
+				if (realDestination.getId() == vm.getId())
+					realDestination = vm;
+			}
+		}
+		
+		if (realSource == null || realDestination == null) {
+			throw new StepNotReproducableException();
+		}
+		
+		realSource.removeJob(movedJob);
+		realDestination.addJob(movedJob);
 	}
 
 	@Override
