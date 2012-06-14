@@ -34,7 +34,7 @@ public enum PolicyLevel {
 
 		if (percent <= PolicyLevel.GREEN.getThreshold())
 			return PolicyLevel.GREEN;
-		else if (percent > PolicyLevel.RED.getThreshold())
+		if (percent > PolicyLevel.RED.getThreshold())
 			return PolicyLevel.RED;
 
 		PolicyLevel result = PolicyLevel.GREEN;
