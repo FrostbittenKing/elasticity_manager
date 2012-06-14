@@ -66,9 +66,7 @@ public class VirtualMachine extends Machine implements IResourceInformation, Clo
 			runningJobThreads.put(currentJob, newJobThread);
 			newJobThread.start();
 		}
-	}
-	
-	
+	}	
 
 	public Integer getTotalAvailableMemory() {
 		return totalAvailableMemory;

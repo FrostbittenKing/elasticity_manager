@@ -95,6 +95,12 @@ public class PhysicalMachine extends Machine implements IResourceInformation, Cl
 				job.getConsumedDiskMemory() <= (diskMemory - usedDiskMemory);
 	}
 	
+	public boolean canHostVirtualMachine(VirtualMachine vm){	
+		return vm.getTotalAvailableCPUs() <= (CPUs - usedCPUs) && 
+		vm.getTotalAvailableMemory() <= (memory - usedMemory) &&
+		vm.getTotalAvailableDiskMemory() <= (diskMemory - usedDiskMemory);
+	}
+	
 	public ArrayList<VirtualMachine> getVirtualHostingCandidates(InsourcedJob job) {
 		ArrayList<VirtualMachine> candidates = new ArrayList<VirtualMachine>();
 		for (VirtualMachine currentCandidate : virtualMachines.values()) {
