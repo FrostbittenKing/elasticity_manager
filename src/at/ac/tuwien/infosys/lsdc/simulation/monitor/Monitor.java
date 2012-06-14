@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.TimerTask;
 
 import at.ac.tuwien.infosys.lsdc.cloud.cluster.Resource.ResourceType;
+import at.ac.tuwien.infosys.lsdc.scheduler.JobOutsourcer;
 import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.GnuPlotOutputDataConverter;
@@ -37,11 +38,14 @@ public class Monitor extends TimerTask{
 		Double relativeCPUUsage = getRelativeCPUUsage();
 		Double relativeMemUsage = getRelativeMemUsage();
 		Double relativeDiskUsage = getRelativeDiskUsage();
+		Integer numberOutsourcedJobs = JobOutsourcer.getInstance().getCurrentNumberOutsourcedJobs();
 		IStatisticsOutputWriter outputFormatter = new GnuPlotStatisticsOutputFormatter(fileName);
 		try {
 			String[][] writerInput = GnuPlotOutputDataConverter.doubleInput(
 					new Double[][]{
-							new Double[]{new Double(timeIndex),costs,relativeUsage, relativeCPUUsage, relativeMemUsage, relativeDiskUsage}
+							new Double[]{new Double(timeIndex),costs,relativeUsage, 
+									relativeCPUUsage, relativeMemUsage, 
+									relativeDiskUsage,numberOutsourcedJobs.doubleValue()}
 							});
 			outputFormatter.writeDataToFile(
 					writerInput, OutputMode.APPEND);

@@ -9,16 +9,21 @@ min=1e38
 set title 'total costs plot'
 set xlabel 'time in sec'
 set ylabel 'percent'
-set xrange [0:60]
+set xrange [0:80]
 set yrange [0:1.2]
+set y2range [0:20]
+#set y2range [0:50]
 set xtics 0,1
 set ytics 0,0.1
+set y2tics 0,1
+set y2label 'outsourced jobs'
 set terminal png size 1400,600
 set output 'test2.png'
 plot "monitorOutput.txt" using ($1/1000):($2) title 'relative energy consumption' with linespoints, \
      "monitorOutput.txt" using ($1/1000):($3) title 'relative usage' with linespoints, \
      "monitorOutput.txt" using ($1/1000):($4) title 'relative cpu usage' with linespoints, \
      "monitorOutput.txt" using ($1/1000):($5) title 'relative mem usage' with linespoints, \
-     "monitorOutput.txt" using ($1/1000):($6) title 'relative disk usage' with linespoints
+     "monitorOutput.txt" using ($1/1000):($6) title 'relative disk usage' with linespoints, \
+     "monitorOutput.txt" using ($1/1000):($7) axes x1y2 title 'outsourced jobs' with linespoints
 #set output 'test_disturbances.png'
 #plot "plotted_data" using ($1/1000):($2) smooth csplines
