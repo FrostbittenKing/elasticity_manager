@@ -44,6 +44,9 @@ public class BestFit<T extends IResourceInformation> {
 
 		int machinecount = 0;
 		Resource currentResource;
+		
+		System.out.println("Trying to find best fitting machine");
+		System.out.println("checking " + machines.size() + " machines");
 		for (T currentMachine : machines) {
 			currentResource = currentMachine.getUsedResources();
 
