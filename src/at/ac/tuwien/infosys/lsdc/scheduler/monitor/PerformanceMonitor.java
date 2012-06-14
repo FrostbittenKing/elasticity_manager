@@ -141,13 +141,14 @@ public class PerformanceMonitor implements IJobEventListener {
 				intermediateSol2.addAll(redistributeVMOperation
 						.execute(currentSolution.getDestination()));
 			}
-			if (intermediateSol2.size() > 0)
+			if (intermediateSol2.size() > 0) {
 				intermediateSol.clear();
 				intermediateSol.addAll(intermediateSol2.subList(0, (intermediateSol2.size() < 5 ? intermediateSol2.size() : 5)));
+			} else {
+				break;
+			}
+				
 		}
-
-		if (intermediateSol.size() > 0)
-			System.out.println("=== SIZE: " + intermediateSol.size());
 
 		Collections.sort(intermediateSol);
 		if (intermediateSol.size() > 0) {
