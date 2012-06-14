@@ -54,6 +54,7 @@ public class MoveVMStep implements IOperationStep {
 
 	@Override
 	public void execute(){
+		
 		source.removeVM(movedVirtualMachine);
 		destination.addVM(movedVirtualMachine);
 	}

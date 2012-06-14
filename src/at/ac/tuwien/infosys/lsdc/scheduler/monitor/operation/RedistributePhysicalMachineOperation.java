@@ -1,8 +1,10 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
-import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.Assignment;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.Change;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step.MoveVMStep;
@@ -21,9 +23,31 @@ public class RedistributePhysicalMachineOperation implements IOperation {
 
 			VirtualMachine[] currentPMVMs = PMs[i].getVirtualMachines().values().toArray(new VirtualMachine[0]);
 			for(int j = 0; j < currentPMVMs.length; j++){
-				BestFit<PhysicalMachine> bestFit = new BestFit<PhysicalMachine>(getFittingPhysicalMachines(PMs, currentPMVMs[j]));
+//				BestFit<PhysicalMachine> bestFit = new BestFit<PhysicalMachine>(getFittingPhysicalMachines(PMs, currentPMVMs[j]));
+//
+//				PhysicalMachine target = (PhysicalMachine) bestFit.getBestFittingMachine(currentPMVMs[j]);
+				
+				List<PhysicalMachine> candidates = new ArrayList<PhysicalMachine>();
+				for (int k = 0; k < PMs.length; k++) {
+					candidates.addAll(Arrays.asList(PMs[k]));
+				}
+				candidates.remove(PMs[i]);
+				List<PhysicalMachine> candidates2 = new ArrayList<PhysicalMachine>();
+				for (PhysicalMachine pm : candidates) {
+					if (pm.canHostVirtualMachine(currentPMVMs[j]))
+						candidates2.add(pm);
+				}
 
-				PhysicalMachine target = (PhysicalMachine) bestFit.getBestFittingMachine(currentPMVMs[j]);
+				PhysicalMachine target = null;
+
+				if (candidates2.size() > 0) {
+					if (candidates2.size() == 1) {
+						target = candidates2.get(0);
+					} else {
+						target = candidates2.get(Math.abs(new Random().nextInt() % (candidates2.size() - 1)));
+					}
+				}
+				
 				if (target == null)
 					continue pmLoop;
 

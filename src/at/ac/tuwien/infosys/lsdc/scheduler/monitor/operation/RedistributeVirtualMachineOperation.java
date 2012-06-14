@@ -47,8 +47,11 @@ public class RedistributeVirtualMachineOperation implements IOperation {
 						VirtualMachine destination = null;
 
 						if (candidates2.size() > 0) {
-							System.out.println("Got "+ candidates2.size() + " candidates");
-							destination = candidates2.get(new Random().nextInt() % candidates2.size());
+							if (candidates2.size() == 1) {
+								destination = candidates2.get(0);
+							} else {
+								destination = candidates2.get(Math.abs(new Random().nextInt() % (candidates2.size() - 1)));
+							}
 						}
 
 						if (destination == null){
