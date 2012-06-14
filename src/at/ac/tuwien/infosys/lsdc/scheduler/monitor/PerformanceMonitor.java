@@ -159,9 +159,13 @@ public class PerformanceMonitor implements IJobEventListener {
 	}
 
 	private void execute(Change plan) {
+		Assignment foo = new Assignment(JobScheduler.getInstance().getCluster().getRunningMachines(),
+				JobScheduler.getInstance().getCluster().getOfflineMachines());
 		for (IOperationStep step : plan.getSteps()) {
 			try {
-				step.execute(plan.getSource());
+				step.execute(foo);
+				foo = new Assignment(JobScheduler.getInstance().getCluster().getRunningMachines(),
+						JobScheduler.getInstance().getCluster().getOfflineMachines());
 			} catch (StepNotReproducableException e) {
 				e.printStackTrace();
 				System.out.println(e.getMessage());

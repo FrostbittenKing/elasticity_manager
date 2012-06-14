@@ -1,6 +1,5 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -36,7 +35,7 @@ public class RedistributeVirtualMachineOperation implements IOperation {
 							continue vmLoop;
 						}
 						MoveJobStep step = new MoveJobStep(currentVM, destination, currentVMJobs[j]);
-						step.execute(source);
+						step.execute();
 						newChange.addStep(step);					
 					}
 					solutions.add(newChange);

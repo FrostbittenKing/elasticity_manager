@@ -8,5 +8,6 @@ public interface IOperationStep {
 	public abstract double getCosts();
 	public abstract Object getSource();
 	public abstract Object getDestination();
+	void execute();
 
 }

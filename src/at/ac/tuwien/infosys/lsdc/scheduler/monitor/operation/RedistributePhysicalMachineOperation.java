@@ -6,7 +6,6 @@ import at.ac.tuwien.infosys.lsdc.scheduler.heuristics.BestFit;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.Assignment;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.Change;
 import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step.MoveVMStep;
-import at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation.step.exception.StepNotReproducableException;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.VirtualMachine;
 
@@ -29,7 +28,7 @@ public class RedistributePhysicalMachineOperation implements IOperation {
 					continue pmLoop;
 
 				MoveVMStep step = new MoveVMStep(PMs[i], target, currentPMVMs[j]);
-				step.execute(source);
+				step.execute();
 				change.addStep(step);
 
 			}
