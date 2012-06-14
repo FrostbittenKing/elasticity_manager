@@ -21,7 +21,7 @@ import at.ac.tuwien.infosys.lsdc.scheduler.objects.InsourcedJob;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 
 public class PerformanceMonitor implements IJobEventListener {
-	
+
 	private static PerformanceMonitor instance;
 
 	private HashMap<Integer, Resource> usagePerPM = new HashMap<Integer, Resource>();
@@ -38,13 +38,13 @@ public class PerformanceMonitor implements IJobEventListener {
 		return instance;
 	}
 
-	public void initialize(CloudCluster cluster){
+	public void initialize(CloudCluster cluster) {
 		this.cluster = cluster;
 	}
 
 	@Override
 	public void jobCompleted(InsourcedJob job) {
-		synchronized(cluster){
+		synchronized (cluster) {
 			free_resources();
 			monitor();
 		}
@@ -53,8 +53,8 @@ public class PerformanceMonitor implements IJobEventListener {
 
 	@Override
 	public void jobAdded(InsourcedJob job) {
-		synchronized(cluster){
-			//		free_resources();
+		synchronized (cluster) {
+			// free_resources();
 			monitor();
 		}
 	}
@@ -98,40 +98,57 @@ public class PerformanceMonitor implements IJobEventListener {
 		try {
 			JobScheduler.getInstance().setCurrentPolicyLevel(
 					PolicyLevel.getAccordingPolicyLevel(usagePercent));
-			System.out.println("SETTING POLICY LEVEL TO: " + PolicyLevel.getAccordingPolicyLevel(usagePercent).toString());
+			System.out.println("SETTING POLICY LEVEL TO: "
+					+ PolicyLevel.getAccordingPolicyLevel(usagePercent)
+							.toString());
 		} catch (IllegalValueException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private void analyze() {
-		Assignment currentState = new Assignment(cluster.getRunningMachines(), cluster.getOfflineMachines());
-		
+		Assignment currentState = new Assignment(cluster.getRunningMachines(),
+				cluster.getOfflineMachines());
+
 		ArrayList<Change> finalSolutionList = new ArrayList<Change>();
 		ArrayList<Change> moveJobsolutions = new ArrayList<Change>();
 		ArrayList<Change> moveVMsolutions = new ArrayList<Change>();
-		
+
 		IOperation redistributeJobOperation = null;
 		IOperation redistributeVMOperation = null;
-		
+
 		try {
-			redistributeJobOperation = OperationFactory.getInstance().getOperation(OperationType.Redistribute_VM);
-			redistributeVMOperation = OperationFactory.getInstance().getOperation(OperationType.Redistribute_PM);
+			redistributeJobOperation = OperationFactory.getInstance()
+					.getOperation(OperationType.Redistribute_VM);
+			redistributeVMOperation = OperationFactory.getInstance()
+					.getOperation(OperationType.Redistribute_PM);
 		} catch (OperationNotSupportedException e) {
 			e.printStackTrace();
 			return;
 		}
-		
-		
+
 		moveJobsolutions.addAll(redistributeJobOperation.execute(currentState));
-		
-		for (Change currentSolution : moveJobsolutions){
-			moveVMsolutions.addAll(redistributeVMOperation.execute(currentSolution.getDestination()));
+
+		ArrayList<Change> intermediateSol = new ArrayList<Change>();
+
+		for (int i = 0; i < 25; i++) {
+
+			for (Change currentSolution : moveJobsolutions) {
+				moveVMsolutions.addAll(redistributeVMOperation
+						.execute(currentSolution.getDestination()));
+			}
+
+			for (Change currentSolution : moveJobsolutions) {
+				moveVMsolutions.addAll(redistributeVMOperation
+						.execute(currentSolution.getDestination()));
+			}
+
+			intermediateSol.addAll(moveVMsolutions);
 		}
-		
+
 		finalSolutionList.addAll(moveJobsolutions);
 		finalSolutionList.addAll(moveVMsolutions);
-		
+
 		Collections.sort(finalSolutionList);
 		if (finalSolutionList.size() > 0) {
 			execute(finalSolutionList.get(0));
