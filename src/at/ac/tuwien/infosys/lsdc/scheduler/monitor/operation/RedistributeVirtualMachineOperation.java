@@ -1,5 +1,6 @@
 package at.ac.tuwien.infosys.lsdc.scheduler.monitor.operation;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -16,24 +17,29 @@ public class RedistributeVirtualMachineOperation implements IOperation {
 	@Override
 	public ArrayList<Change> execute(Assignment source) {
 		ArrayList<Change> solutions = new ArrayList<Change>();
-		
+
 		PhysicalMachine[] runningPhysicalMachines = source.getRunningPhysicalMachines();
 		for (int i = 0; i < runningPhysicalMachines.length; i++){
 			PhysicalMachine[] machines = runningPhysicalMachines.clone();
 			Map<Integer, VirtualMachine> virtualMachines = machines[i].getVirtualMachines();
-			vmLoop: for(VirtualMachine currentVM : virtualMachines.values()){
-				Change newChange = new Change(source, new Assignment(machines, source.getStoppedPhysicalMachines().clone()));
-				for(InsourcedJob currentJob : currentVM.getRunningJobs().keySet()){
-					BestFit<VirtualMachine> bestFit = new BestFit<VirtualMachine>(virtualMachines.values().toArray(new VirtualMachine[0]));
-					VirtualMachine destination = (VirtualMachine)bestFit.getBestFittingMachineIgnoreCurrent(currentJob);
-					if (destination == null){
-						continue vmLoop;
+
+			synchronized(virtualMachines) {
+				vmLoop: for(VirtualMachine currentVM : virtualMachines.values()){
+					Change newChange = new Change(source, new Assignment(machines, source.getStoppedPhysicalMachines().clone()));
+					InsourcedJob[] currentVMJobs = currentVM.getRunningJobs().keySet().toArray(new InsourcedJob[0]);
+					for(int j = 0; j < currentVM.getRunningJobs().size(); j++){
+						BestFit<VirtualMachine> bestFit = new BestFit<VirtualMachine>(virtualMachines.values().
+								toArray(new VirtualMachine[virtualMachines.values().size()]));
+						VirtualMachine destination = (VirtualMachine)bestFit.getBestFittingMachineIgnoreCurrent(currentVMJobs[j]);
+						if (destination == null){
+							continue vmLoop;
+						}
+						MoveJobStep step = new MoveJobStep(currentVM, destination, currentVMJobs[j]);
+						step.execute(source);
+						newChange.addStep(step);					
 					}
-					MoveJobStep step = new MoveJobStep(currentVM, destination, currentJob);
-					step.execute(source);
-					newChange.addStep(step);					
+					solutions.add(newChange);
 				}
-				solutions.add(newChange);
 			}
 		}
 		SolutionReducer.reduce(solutions);

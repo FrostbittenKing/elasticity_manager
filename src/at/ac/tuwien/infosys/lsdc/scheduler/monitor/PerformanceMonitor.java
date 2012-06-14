@@ -139,10 +139,13 @@ public class PerformanceMonitor implements IJobEventListener {
 		solutions.addAll(op.execute(currentState));
 		
 		Collections.sort(solutions);
-		
+		// UGLY UGLY -- IndexOutOfBoundsException when no solution found
+		/*
 		plan = solutions.get(0);
-		
-		execute(plan);
+		*/
+		if (solutions.size() > 0) {
+			execute(solutions.get(0));
+		}
 		
 //		solutions.addAll()
 	}

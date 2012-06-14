@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class GnuPlotStatisticsOutputFormatter implements
-IStatisticsOutputFormatter {
+IStatisticsOutputWriter {
 
 	private static final char HEADER_COLUMN_NAME_START = (char)((int)'a' - 1);
 	private static final char HEADER_COLUMN_START  = '#';

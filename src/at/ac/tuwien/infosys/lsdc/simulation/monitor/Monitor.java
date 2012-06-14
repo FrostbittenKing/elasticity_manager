@@ -9,8 +9,8 @@ import at.ac.tuwien.infosys.lsdc.scheduler.JobScheduler;
 import at.ac.tuwien.infosys.lsdc.scheduler.objects.PhysicalMachine;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.GnuPlotOutputDataConverter;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.GnuPlotStatisticsOutputFormatter;
-import at.ac.tuwien.infosys.lsdc.scheduler.statistics.IStatisticsOutputFormatter;
-import at.ac.tuwien.infosys.lsdc.scheduler.statistics.IStatisticsOutputFormatter.OutputMode;
+import at.ac.tuwien.infosys.lsdc.scheduler.statistics.IStatisticsOutputWriter;
+import at.ac.tuwien.infosys.lsdc.scheduler.statistics.IStatisticsOutputWriter.OutputMode;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.PhysicalMachineUsage;
 import at.ac.tuwien.infosys.lsdc.scheduler.statistics.StatisticsWriterException;
 
@@ -34,16 +34,18 @@ public class Monitor extends TimerTask{
 		Double costs = getRelativeCosts();
 		Double relativeUsage = getRelativePMUsage();
 		
-		IStatisticsOutputFormatter outputFormatter = new GnuPlotStatisticsOutputFormatter(fileName);
+		IStatisticsOutputWriter outputFormatter = new GnuPlotStatisticsOutputFormatter(fileName);
 		try {
+			String[][] writerInput = GnuPlotOutputDataConverter.doubleInput(
+					new Double[][]{
+							new Double[]{new Double(timeIndex),costs,relativeUsage}
+							});
 			outputFormatter.writeDataToFile(
-					GnuPlotOutputDataConverter.doubleInput(new Double[][]{new Double[]{new Double(timeIndex),costs,relativeUsage}}), OutputMode.APPEND);
+					writerInput, OutputMode.APPEND);
 			timeIndex += tickRate;
 		} catch (StatisticsWriterException e) {
 			System.err.println(e.getMessage());
 		}
-		//TODO plotting usage/machine -- HISTOGRAM y: %, x: machines
-		// total costs of all machines over timey: sum costs, x: time
 	}
 	
 	private Double getRelativeCosts() {
