@@ -166,10 +166,12 @@ public class CloudCluster implements IJobEventListener {
 
 	public ArrayList<PhysicalMachineUsage> getUsage() {
 		ArrayList<PhysicalMachineUsage> physicalMachineUsage = new ArrayList<PhysicalMachineUsage>();
-		for (PhysicalMachine currentPM : runningMachines.values()) {
-			physicalMachineUsage.add(new PhysicalMachineUsage(currentPM
-					.getUsedResources(), currentPM.getTotalResources()));
+		synchronized (runningMachines) {
+			for (PhysicalMachine currentPM : runningMachines.values()) {
+				physicalMachineUsage.add(new PhysicalMachineUsage(currentPM
+						.getUsedResources(), currentPM.getTotalResources()));
 
+			}
 		}
 		return physicalMachineUsage;
 	}

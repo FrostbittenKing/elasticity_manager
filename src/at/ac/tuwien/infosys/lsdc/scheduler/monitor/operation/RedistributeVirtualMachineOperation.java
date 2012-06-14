@@ -30,6 +30,7 @@ public class RedistributeVirtualMachineOperation implements IOperation {
 					for(int j = 0; j < currentVM.getRunningJobs().size(); j++){
 						BestFit<VirtualMachine> bestFit = new BestFit<VirtualMachine>(virtualMachines.values().
 								toArray(new VirtualMachine[virtualMachines.values().size()]));
+						
 						VirtualMachine destination = (VirtualMachine)bestFit.getBestFittingMachineIgnoreCurrent(currentVMJobs[j]);
 						if (destination == null){
 							continue vmLoop;
